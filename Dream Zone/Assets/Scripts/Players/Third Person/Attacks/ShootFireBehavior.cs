@@ -24,35 +24,16 @@ public class ShootFireBehavior : MonoBehaviour
         rb.sleepThreshold = 0.0f;
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
     void Update()
     {
         if (lifeTimeCount.TimeHasPassed(lifeTime))
-        {
             ReturnToPool();
-        }
-
 
         if (!hit && Vector3.Distance(transform.position, target) < 0.1f)
-        {
             ReturnToPool();
-        }
-
     }
 
-    private void FixedUpdate()
-    {
-       // transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
-       //Vector3 trajetory = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
-
-        Vector3 trajetory = (target - transform.position).normalized;
-        rb.MovePosition(rb.position + trajetory * speed * Time.fixedDeltaTime);
-    }
+    private void FixedUpdate() => rb.velocity = (target - transform.position).normalized * speed;
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -63,10 +44,8 @@ public class ShootFireBehavior : MonoBehaviour
         ReturnToPool();
     }
 
-    private void ReturnToPool()
-    {
-        ShootFirePool.Instance.AddToPool(gameObject);
-    }
+    private void ReturnToPool() => ShootFirePool.Instance.AddToPool(gameObject);
+    private void OnEnable() => lifeTimeCount.ResetTime();
 
     private void OnDisable()
     {
@@ -74,8 +53,4 @@ public class ShootFireBehavior : MonoBehaviour
         target = Vector3.zero;
     }
 
-    private void OnEnable()
-    {
-        lifeTimeCount.ResetTime();
-    }
 }
