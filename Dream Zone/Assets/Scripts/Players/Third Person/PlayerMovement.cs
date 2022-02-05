@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,10 +7,11 @@ public class PlayerMovement : MonoBehaviour
 {
     public enum rbMode { Velocity, Teleport };
     public rbMode movementMode;
+    public float rbMaxFallSpeed { get; private set; }
 
     [SerializeField] private float rbVelocityMultiplier = 6f;
-    private PlayerCore playerCore;
 
+    private PlayerCore playerCore;
     public Vector3 playerMovement;
     private Tools rbModeTimer;
 
@@ -19,7 +21,20 @@ public class PlayerMovement : MonoBehaviour
         rbModeTimer = new Tools();
     }
 
-    private void FixedUpdate() => changeRbMode();
+    private void FixedUpdate()
+    {
+        ChangeRbMode();
+        ClampVelocity();
+    }
+
+    public void ClampVelocity()
+    {
+        if (!playerCore.collisionSenses.CheckIfTouchingGround() && playerCore.playerController.rb.velocity.y < -5f)
+        {
+            if (playerCore.playerController.rb.velocity.magnitude > rbMaxFallSpeed)
+                playerCore.playerController.rb.velocity = Vector3.ClampMagnitude(playerCore.playerController.rb.velocity, rbMaxFallSpeed);
+        }
+    }
 
     public void Movement(float playerSpeed)
     {
@@ -76,7 +91,8 @@ public class PlayerMovement : MonoBehaviour
         playerCore.playerController.rb.velocity = transform.up * jumpForce;
     }
 
-    public void changeRbMode()
+    //The movement is based on how realistic I need rigidbody to be in wich occasion 
+    public void ChangeRbMode()
     {
         if (playerCore.collisionSenses.StepCheck())
         {
@@ -93,6 +109,5 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    //public void SetJumpFoce() =>
-
+    public void setFallVelocity(float fallVelocity) => rbMaxFallSpeed = fallVelocity;
 }
