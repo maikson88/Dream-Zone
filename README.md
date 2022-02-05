@@ -1,5 +1,5 @@
 # Dream Zone
-For learning porpouses, but actually as challenge, to make a complete 3D platformer from scratch
+For learning porpouses and a challenge to make a complete 3D platformer from scratch
 
 ##What has been made
 
@@ -42,3 +42,5 @@ For learning porpouses, but actually as challenge, to make a complete 3D platfor
 - [ ] Gravity per Object system
 - [ ] Car Controller, Flying Controller
 - [ ] Shoot VFX projectiles
+
+ Any doubts on the ongoing project, just mail-me: maiksonmendes1988@gmail.com or maiksonstrife@gmail.com
