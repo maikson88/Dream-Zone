@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class CollisionSenses : MonoBehaviour
@@ -71,16 +72,18 @@ public class CollisionSenses : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.yellow;
+        Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position + groundCheckOffset, groundCheckRadius);
+        
 
-        Gizmos.DrawRay(smallStepLower.transform.position, Vector3.forward * rayDistance);
-        Gizmos.DrawRay(smallStepUpper.transform.position, Vector3.forward * rayDistance);
+        Gizmos.DrawRay(smallStepLower.transform.position, transform.TransformDirection(Vector3.forward * rayDistance));
+        Gizmos.DrawRay(smallStepUpper.transform.position, transform.TransformDirection(Vector3.forward * rayDistance));
 
-        Gizmos.DrawRay(smallStepLower.transform.position, new Vector3(1.5f, 0, 1) * rayDistance);
-        Gizmos.DrawRay(smallStepUpper.transform.position, new Vector3(1.5f, 0, 1) * rayDistance);
+        Gizmos.DrawRay(smallStepLower.transform.position, transform.TransformDirection(new Vector3(1.5f, 0, 1) * rayDistance));
+        Gizmos.DrawRay(smallStepUpper.transform.position, transform.TransformDirection(new Vector3(1.5f, 0, 1) * rayDistance));
 
-        Gizmos.DrawRay(smallStepLower.transform.position, new Vector3(-1.5f, 0, 1) * rayDistance);
-        Gizmos.DrawRay(smallStepUpper.transform.position, new Vector3(-1.5f, 0, 1) * rayDistance);
+        Gizmos.DrawRay(smallStepLower.transform.position, transform.TransformDirection(new Vector3(-1.5f, 0, 1) * rayDistance));
+        Gizmos.DrawRay(smallStepUpper.transform.position, transform.TransformDirection(new Vector3(-1.5f, 0, 1) * rayDistance));
+
     }
 }
