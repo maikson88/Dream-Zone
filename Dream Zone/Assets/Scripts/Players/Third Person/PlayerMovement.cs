@@ -94,10 +94,11 @@ public class PlayerMovement : MonoBehaviour
     //The movement is based on how realistic I need rigidbody to be in wich occasion 
     public void ChangeRbMode()
     {
-        if (playerCore.collisionSenses.StepCheck())
+        if (playerCore.collisionSenses.StepCheck() && playerCore.playerController.playerInput.NormalizedMovementInput != Vector2.zero)
         {
             playerCore.playerController.rb.velocity = Vector3.zero;
             movementMode = rbMode.Teleport;
+            playerCore.playerController.rb.position -= new Vector3(0f, -15f * Time.deltaTime, 0f);
             rbModeTimer.ResetTime();
         }
         else
@@ -108,6 +109,8 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
+
+
 
     public void setFallVelocity(float fallVelocity) => rbMaxFallSpeed = fallVelocity;
 }

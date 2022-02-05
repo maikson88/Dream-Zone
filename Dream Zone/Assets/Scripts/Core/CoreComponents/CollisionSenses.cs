@@ -33,6 +33,7 @@ public class CollisionSenses : MonoBehaviour
             if (!Physics.Raycast(smallStepUpper.transform.position, transform.TransformDirection(Vector3.forward), out hitUpper, rayDistance))
             {
                 Debug.Log("Not Detected upper 1");
+
                 return true;
             }
         }
