@@ -1302,7 +1302,7 @@ PrefabInstance:
     - target: {fileID: 3998644923830825044, guid: 15ee7cd5c52620d4b86f56144628c8e9,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.5122544
+      value: 0.8524789
       objectReference: {fileID: 0}
     - target: {fileID: 3998644923830825044, guid: 15ee7cd5c52620d4b86f56144628c8e9,
         type: 3}
@@ -44147,8 +44147,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   smallStepUpper: {fileID: 1610694503}
   smallStepLower: {fileID: 164523212}
-  stepHigh: 2
-  stepSmooth: 0.1
   climbVelocity: {x: 0, y: 5, z: 0}
   rayDistance: 1
   groundCheck: {fileID: 1426725041}
@@ -44189,7 +44187,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1719682860}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 3bc432d4745965149ac73f575aced4de, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.36897555
@@ -44370,15 +44368,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: 0
-  movementMode: 0
   playerSpeed: 9
   jumpForce: 10
-  rotationSpeed: 9
-  groundCheckOffset: {x: 0, y: -0.03, z: 0}
-  groundCheckRadius: 0.3
   playerCore: {fileID: 1368018140}
   canJump: 0
-  rbmodeVelocity: 1
 --- !u!114 &1719682868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -45374,6 +45367,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cc1a01637681bf4ead94d2ae0c4cd9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerCore: {fileID: 1368018140}
   shootBufferTime: 0.5
   bulletHitMissDistance: 100
 --- !u!4 &1980883699 stripped
@@ -46241,6 +46235,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1125512627690663317, guid: 075ed8f61228d6043b874a1f9c61bba7,
+        type: 3}
+      propertyPath: speed
+      value: 500
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 075ed8f61228d6043b874a1f9c61bba7, type: 3}
