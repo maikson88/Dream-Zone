@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
         JumpBuffer = new Tools();
         currentState = playerStates.groundMoving;
+        playerCore.playerMovement.setFallVelocity(25f);
     }
 
     private void FixedUpdate()
@@ -97,7 +98,7 @@ public class PlayerController : MonoBehaviour
 
     private void GroundMoving()
     {
-        anim.SetBool("isLanding", false);
+        anim.SetBool("isGroundMoving", true);
 
         playerCore.playerMovement.Movement(playerSpeed);
 
@@ -173,7 +174,7 @@ public class PlayerController : MonoBehaviour
     private void onAir()
     {
 
-        if (rb.velocity.y < 0)
+        if (rb.velocity.y <= 0)
         {
             playerCore.animEvents.JumpReset();
             playerCore.animEvents.isSuperJump = false;
@@ -184,7 +185,7 @@ public class PlayerController : MonoBehaviour
 
         if (onGround && rb.velocity.y <= 0)
         {
-            anim.SetBool("isLanding", true);
+            anim.SetBool("isFalling", false);
             currentState = playerStates.groundMoving;
         }
     }
