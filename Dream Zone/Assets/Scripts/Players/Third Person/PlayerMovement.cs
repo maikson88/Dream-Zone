@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public enum rbMode { Velocity, Teleport };
+    public enum rbMode { Velocity, Teleport, Gravity };
     public rbMode movementMode;
     public float rbMaxFallSpeed { get; private set; }
 
@@ -14,6 +14,8 @@ public class PlayerMovement : MonoBehaviour
     private PlayerCore playerCore;
     public Vector3 playerMovement;
     private Tools rbModeTimer;
+
+    private Vector3 oldVelocity;
 
     private void Start()
     {
@@ -50,9 +52,37 @@ public class PlayerMovement : MonoBehaviour
         if (movementMode == rbMode.Velocity)
         {
             playerMovement = playerCore.playerController.xDirection + playerCore.playerController.yDirection;
-            playerMovement *= playerSpeed + rbVelocityMultiplier;
-            playerCore.playerController.rb.velocity = new Vector3(playerMovement.x, playerCore.playerController.rb.velocity.y, playerMovement.z);
+            oldVelocity = new Vector3(playerMovement.x, playerCore.playerController.rb.velocity.y, playerMovement.z);
+
+            Vector3 groundNormal = playerCore.collisionSenses.GetGroundNormal();
+
+            //Not Normalizing cause the lenght is important here
+            float adjustedSpeed = Vector3.Dot(groundNormal, playerMovement);
+            playerSpeed -= adjustedSpeed;
+            playerMovement *= (playerSpeed + rbVelocityMultiplier);
+
+            //Displacing Player movement directly
+            Vector3 projectedMovement = playerMovement - groundNormal * Vector3.Dot(groundNormal, playerMovement);
+            Vector3 newMovement = new Vector3(projectedMovement.x, playerCore.playerController.rb.velocity.y, projectedMovement.z);
+            playerCore.playerController.rb.velocity = Vector3.Lerp(playerCore.playerController.rb.velocity, newMovement, 5f * Time.deltaTime);
+
         }
+
+        if(movementMode == rbMode.Gravity)
+        {
+
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        //Showing the projection on Plane
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawLine(transform.position, transform.position + oldVelocity.normalized);
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(transform.position, transform.position + playerCore.playerController.rb.velocity.normalized);
+        //Debug.Log(playerCore.playerController.rb.velocity.normalized);
     }
 
     public void FlyMovement(float playerSpeed)
@@ -98,7 +128,10 @@ public class PlayerMovement : MonoBehaviour
         {
             playerCore.playerController.rb.velocity = Vector3.zero;
             movementMode = rbMode.Teleport;
-            playerCore.playerController.rb.position -= new Vector3(0f, -15f * Time.deltaTime, 0f);
+            if (!playerCore.collisionSenses.CheckIfTheresSlopeNear() && playerCore.collisionSenses.CheckIfTouchingGround())
+            {
+                playerCore.playerController.rb.position -= new Vector3(0f, -15f * Time.deltaTime, 0f);
+            }
             rbModeTimer.ResetTime();
         }
         else
