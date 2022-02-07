@@ -29,7 +29,8 @@ public class PlayerMovement : MonoBehaviour
     int stepsSinceLastGrounded;
     private void FixedUpdate()
     {
-        SnapToGround();
+        if (!playerCore.playerController.isJumping)
+            SnapToGround();
         ChangeRbMode();
         ClampVelocity();
     }
@@ -51,18 +52,18 @@ public class PlayerMovement : MonoBehaviour
         {
             return false;
         }
-        if (hit.normal.y < playerCore.collisionSenses.dotGround || hit.transform.gameObject.layer == 12)
+
+        if (playerCore.collisionSenses.CheckIfTheresSlopeNear() || hit.transform.gameObject.layer == 12)
         {
             float speed = playerCore.playerController.rb.velocity.magnitude;
             float dot = Vector3.Dot(playerCore.playerController.rb.velocity, hit.normal);
             if (dot > 0f)
+            {
                 playerCore.playerController.rb.velocity = (playerCore.playerController.rb.velocity - hit.normal * dot).normalized * speed;
+            }
             return true;
         }
         else return false;
-
-
-        
     }
 
     public void Movement(float playerSpeed)
@@ -79,26 +80,13 @@ public class PlayerMovement : MonoBehaviour
         if (movementMode == rbMode.Velocity)
         {
             playerMovement = playerCore.playerController.xDirection + playerCore.playerController.yDirection;
-            oldVelocity = new Vector3(playerMovement.x, playerCore.playerController.rb.velocity.y, playerMovement.z);
-
             Vector3 groundNormal = playerCore.collisionSenses.GetGroundNormal();
-
             playerMovement *= (playerSpeed + rbVelocityMultiplier);
-
-            //Displacing Player movement directly To the ground Normal
             Vector3 projectedMovement = playerMovement - groundNormal * Vector3.Dot(groundNormal, playerMovement.normalized);
             Vector3 newMovement = new Vector3(projectedMovement.x, playerCore.playerController.rb.velocity.y, projectedMovement.z);
-
-            //trying to alignspeed
-            float alignedSpeed = Vector3.Dot(newMovement, groundNormal);
-            if (alignedSpeed > 0f && playerCore.collisionSenses.CheckIfTouchingGround())
-            {
-                playerSpeed = Mathf.Max(playerSpeed - alignedSpeed, 0f);
-                newMovement -= (groundNormal * alignedSpeed) * ClimbingHardness;
-            }
-
-
-            playerCore.playerController.rb.velocity = new Vector3(newMovement.x, newMovement.y, newMovement.z);
+            if (playerCore.playerController.rb.velocity.y > 0)
+                newMovement = new Vector3(projectedMovement.x * groundNormal.y, playerCore.playerController.rb.velocity.y, projectedMovement.z * groundNormal.y);
+            playerCore.playerController.rb.velocity = newMovement;
         }
     }
 
@@ -138,13 +126,15 @@ public class PlayerMovement : MonoBehaviour
         playerCore.playerController.rb.velocity = transform.up * jumpForce;
     }
 
-    //The movement is based on how realistic I need rigidbody to be in wich occasion 
     public void ChangeRbMode()
     {
-        if(SnapToGround())
+        if (!playerCore.playerController.isJumping)
         {
-            movementMode = rbMode.Velocity;
-            return;
+            if (SnapToGround())
+            {
+                movementMode = rbMode.Velocity;
+                return;
+            }
         }
 
 
