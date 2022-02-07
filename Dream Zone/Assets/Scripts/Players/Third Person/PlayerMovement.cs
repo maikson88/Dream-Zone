@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private float rbVelocityMultiplier = 6f;
     [SerializeField] private float sizeOfSteps = -15f;
+    [SerializeField] [Range(0,15)] private float ClimbingHardness = -15f;
 
     private PlayerCore playerCore;
     public Vector3 playerMovement;
@@ -28,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
     int stepsSinceLastGrounded;
     private void FixedUpdate()
     {
-        if(!playerCore.playerController.isJumping) SnapToGround();
+        SnapToGround();
         ChangeRbMode();
         ClampVelocity();
     }
@@ -50,17 +51,18 @@ public class PlayerMovement : MonoBehaviour
         {
             return false;
         }
-        if (hit.normal.y > playerCore.collisionSenses.dotGround || hit.transform.gameObject.layer == 12)
+        if (hit.normal.y < playerCore.collisionSenses.dotGround || hit.transform.gameObject.layer == 12)
         {
-            return false;
+            float speed = playerCore.playerController.rb.velocity.magnitude;
+            float dot = Vector3.Dot(playerCore.playerController.rb.velocity, hit.normal);
+            if (dot > 0f)
+                playerCore.playerController.rb.velocity = (playerCore.playerController.rb.velocity - hit.normal * dot).normalized * speed;
+            return true;
         }
+        else return false;
 
-        float speed = playerCore.playerController.rb.velocity.magnitude;
-        float dot = Vector3.Dot(playerCore.playerController.rb.velocity, hit.normal);
-        if (dot > 0f)
-            playerCore.playerController.rb.velocity = (playerCore.playerController.rb.velocity - hit.normal * dot).normalized * speed;
 
-        return true;
+        
     }
 
     public void Movement(float playerSpeed)
@@ -84,9 +86,19 @@ public class PlayerMovement : MonoBehaviour
             playerMovement *= (playerSpeed + rbVelocityMultiplier);
 
             //Displacing Player movement directly To the ground Normal
-            Vector3 projectedMovement = playerMovement - groundNormal * Vector3.Dot(groundNormal, playerMovement);
+            Vector3 projectedMovement = playerMovement - groundNormal * Vector3.Dot(groundNormal, playerMovement.normalized);
             Vector3 newMovement = new Vector3(projectedMovement.x, playerCore.playerController.rb.velocity.y, projectedMovement.z);
-            playerCore.playerController.rb.velocity = newMovement;
+
+            //trying to alignspeed
+            float alignedSpeed = Vector3.Dot(newMovement, groundNormal);
+            if (alignedSpeed > 0f && playerCore.collisionSenses.CheckIfTouchingGround())
+            {
+                playerSpeed = Mathf.Max(playerSpeed - alignedSpeed, 0f);
+                newMovement -= (groundNormal * alignedSpeed) * ClimbingHardness;
+            }
+
+
+            playerCore.playerController.rb.velocity = new Vector3(newMovement.x, newMovement.y, newMovement.z);
         }
     }
 
@@ -129,13 +141,19 @@ public class PlayerMovement : MonoBehaviour
     //The movement is based on how realistic I need rigidbody to be in wich occasion 
     public void ChangeRbMode()
     {
+        if(SnapToGround())
+        {
+            movementMode = rbMode.Velocity;
+            return;
+        }
+
+
         if (playerCore.collisionSenses.StepCheck() && playerCore.playerController.playerInput.NormalizedMovementInput != Vector2.zero)
         {
             playerCore.playerController.rb.velocity = Vector3.zero;
             movementMode = rbMode.Teleport;
-            if (!SnapToGround() && !playerCore.collisionSenses.CheckIfTheresSlopeNear() && playerCore.collisionSenses.CheckIfTouchingGround())
+            if (!playerCore.collisionSenses.CheckIfTheresSlopeNear() && playerCore.collisionSenses.CheckIfTouchingGround())
             {
-                //Debug.LogError("FLYing into the night");
                 playerCore.playerController.rb.position -= new Vector3(0f, sizeOfSteps * Time.deltaTime, 0f);
             }
             rbModeTimer.ResetTime();
