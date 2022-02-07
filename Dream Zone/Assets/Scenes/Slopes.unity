@@ -7967,6 +7967,11 @@ PrefabInstance:
       propertyPath: sizeOfSteps
       value: -1
       objectReference: {fileID: 0}
+    - target: {fileID: 8227827924099000532, guid: 07a46b49b5049f741b7c3b6600d8c300,
+        type: 3}
+      propertyPath: ClimbingHardness
+      value: 7.9
+      objectReference: {fileID: 0}
     - target: {fileID: 8595672976767103810, guid: 07a46b49b5049f741b7c3b6600d8c300,
         type: 3}
       propertyPath: m_Layer
@@ -13670,7 +13675,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-227978
+  m_Name: pb_Mesh22324
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

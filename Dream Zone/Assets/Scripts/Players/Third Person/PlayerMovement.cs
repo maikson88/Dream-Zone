@@ -123,7 +123,8 @@ public class PlayerMovement : MonoBehaviour
 
     public void JumpUpward(float jumpForce)
     {
-        playerCore.playerController.rb.velocity = transform.up * jumpForce;
+        float alignedSpeed = Vector3.Dot(playerCore.playerController.rb.velocity, playerCore.collisionSenses.GetGroundNormal());
+        playerCore.playerController.rb.velocity += playerCore.collisionSenses.GetGroundNormal() * jumpForce;
     }
 
     public void ChangeRbMode()
