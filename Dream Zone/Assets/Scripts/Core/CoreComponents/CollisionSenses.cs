@@ -23,7 +23,13 @@ public class CollisionSenses : MonoBehaviour
     [SerializeField]
     private float groundCheckRadius;
 
+    [Header("Slopes and Snapping")]
+    public float minGroundAngle = 25;
 
+    [Header("Layers")]
+    public LayerMask groundLayers;
+
+    public float dotGround { get; private set; }
 
     public bool StepCheck()
     {
@@ -103,13 +109,10 @@ public class CollisionSenses : MonoBehaviour
 
         bool CheckIsSlope()
         {
-            Debug.Log("is Slope");
-
             cachedNormal = hitFo.normal;
             //Converting angle to dot
-            float minGroundAngle = 25;
             float angleToRadians = minGroundAngle * Mathf.Deg2Rad;
-            float dotGround = Mathf.Cos(angleToRadians);
+            dotGround = Mathf.Cos(angleToRadians);
             //Comparing if raycast is considered Ground
             if (cachedNormal.y < dotGround)
                 return true;
@@ -119,7 +122,8 @@ public class CollisionSenses : MonoBehaviour
 
     public bool CheckIfTouchingGround()
     {
-        if (Physics.CheckSphere(groundCheck.position + groundCheckOffset, groundCheckRadius, 11)) return true;
+        if (Physics.CheckSphere(groundCheck.position + groundCheckOffset, groundCheckRadius, groundLayers))
+            return true;
         else return false;
     }
 

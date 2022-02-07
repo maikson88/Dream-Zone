@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     public float rbMaxFallSpeed { get; private set; }
 
     [SerializeField] private float rbVelocityMultiplier = 6f;
+    [SerializeField] private float sizeOfSteps = -15f;
 
     private PlayerCore playerCore;
     public Vector3 playerMovement;
@@ -17,17 +18,22 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 oldVelocity;
 
+
     private void Start()
     {
         playerCore = GetComponent<PlayerCore>();
         rbModeTimer = new Tools();
     }
 
+    int stepsSinceLastGrounded;
     private void FixedUpdate()
     {
+        if(!playerCore.playerController.isJumping) SnapToGround();
         ChangeRbMode();
         ClampVelocity();
     }
+
+
 
     public void ClampVelocity()
     {
@@ -36,6 +42,25 @@ public class PlayerMovement : MonoBehaviour
             if (playerCore.playerController.rb.velocity.magnitude > rbMaxFallSpeed)
                 playerCore.playerController.rb.velocity = Vector3.ClampMagnitude(playerCore.playerController.rb.velocity, rbMaxFallSpeed);
         }
+    }
+
+    private bool SnapToGround()
+    {
+        if (!Physics.Raycast(playerCore.playerController.rb.position + Vector3.up * 0.5f, transform.TransformDirection(Vector3.down), out RaycastHit hit, 1.5f))
+        {
+            return false;
+        }
+        if (hit.normal.y > playerCore.collisionSenses.dotGround || hit.transform.gameObject.layer == 12)
+        {
+            return false;
+        }
+
+        float speed = playerCore.playerController.rb.velocity.magnitude;
+        float dot = Vector3.Dot(playerCore.playerController.rb.velocity, hit.normal);
+        if (dot > 0f)
+            playerCore.playerController.rb.velocity = (playerCore.playerController.rb.velocity - hit.normal * dot).normalized * speed;
+
+        return true;
     }
 
     public void Movement(float playerSpeed)
@@ -56,33 +81,13 @@ public class PlayerMovement : MonoBehaviour
 
             Vector3 groundNormal = playerCore.collisionSenses.GetGroundNormal();
 
-            //Not Normalizing cause the lenght is important here
-            float adjustedSpeed = Vector3.Dot(groundNormal, playerMovement);
-            playerSpeed -= adjustedSpeed;
             playerMovement *= (playerSpeed + rbVelocityMultiplier);
 
-            //Displacing Player movement directly
+            //Displacing Player movement directly To the ground Normal
             Vector3 projectedMovement = playerMovement - groundNormal * Vector3.Dot(groundNormal, playerMovement);
             Vector3 newMovement = new Vector3(projectedMovement.x, playerCore.playerController.rb.velocity.y, projectedMovement.z);
-            playerCore.playerController.rb.velocity = Vector3.Lerp(playerCore.playerController.rb.velocity, newMovement, 5f * Time.deltaTime);
-
+            playerCore.playerController.rb.velocity = newMovement;
         }
-
-        if(movementMode == rbMode.Gravity)
-        {
-
-        }
-    }
-
-    private void OnDrawGizmos()
-    {
-        //Showing the projection on Plane
-
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawLine(transform.position, transform.position + oldVelocity.normalized);
-        Gizmos.color = Color.green;
-        Gizmos.DrawLine(transform.position, transform.position + playerCore.playerController.rb.velocity.normalized);
-        //Debug.Log(playerCore.playerController.rb.velocity.normalized);
     }
 
     public void FlyMovement(float playerSpeed)
@@ -128,9 +133,10 @@ public class PlayerMovement : MonoBehaviour
         {
             playerCore.playerController.rb.velocity = Vector3.zero;
             movementMode = rbMode.Teleport;
-            if (!playerCore.collisionSenses.CheckIfTheresSlopeNear() && playerCore.collisionSenses.CheckIfTouchingGround())
+            if (!SnapToGround() && !playerCore.collisionSenses.CheckIfTheresSlopeNear() && playerCore.collisionSenses.CheckIfTouchingGround())
             {
-                playerCore.playerController.rb.position -= new Vector3(0f, -15f * Time.deltaTime, 0f);
+                //Debug.LogError("FLYing into the night");
+                playerCore.playerController.rb.position -= new Vector3(0f, sizeOfSteps * Time.deltaTime, 0f);
             }
             rbModeTimer.ResetTime();
         }
@@ -143,7 +149,16 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void OnDrawGizmos()
+    {
+        //Showing the projection on Plane (For documentation pourposes)
 
+        //Gizmos.color = Color.cyan;
+        //Gizmos.DrawLine(transform.position, transform.position + oldVelocity.normalized);
+        //Gizmos.color = Color.green;
+        //Gizmos.DrawLine(transform.position, transform.position + playerCore.playerController.rb.velocity.normalized);
+        //Debug.Log(playerCore.playerController.rb.velocity.normalized);
+    }
 
     public void setFallVelocity(float fallVelocity) => rbMaxFallSpeed = fallVelocity;
 }

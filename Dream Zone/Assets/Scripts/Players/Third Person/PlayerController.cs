@@ -167,8 +167,6 @@ public class PlayerController : MonoBehaviour
             playerCore.animEvents.SuperJump(true);
             currentState = playerStates.superJumping;
         }
-
-        
     }
 
     private void onAir()
