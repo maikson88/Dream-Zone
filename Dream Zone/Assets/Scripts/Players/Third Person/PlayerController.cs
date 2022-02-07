@@ -234,7 +234,7 @@ public class PlayerController : MonoBehaviour
         //GUI.Box(new Rect(730, 0, 125, 25), checkWallBack);
 
         if (currentState.ToString() != _previousState)
-            Debug.Log(string.Concat("State : ", currentStateDebug));
+            //Debug.Log(string.Concat("State : ", currentStateDebug));
 
         _previousState = currentStateDebug;
     }

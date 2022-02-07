@@ -29,7 +29,7 @@ public class CollisionSenses : MonoBehaviour
     [Header("Layers")]
     public LayerMask groundLayers;
 
-    public float dotGround { get; private set; }
+    public Vector3 dotGround { get; private set; }
 
     public bool StepCheck()
     {
@@ -69,7 +69,7 @@ public class CollisionSenses : MonoBehaviour
         return false;
     }
 
-    public Vector3 GetGroundNormal()
+    public Vector3 CheckGroundNormal()
     {
         RaycastHit hitFo;
         Vector3 cachedNormal;
@@ -81,13 +81,27 @@ public class CollisionSenses : MonoBehaviour
         cachedNormal = hitFo.normal;
 
         //Converting angle to dot
-        float minGroundAngle = 40;
+        float minGroundAngle = 20;
         float angleToRadians = minGroundAngle * Mathf.Deg2Rad;
         float dotGround = Mathf.Cos(angleToRadians);
 
         //Comparing if raycast is considered Ground
         if (CheckIfTouchingGround() && cachedNormal.y >= dotGround)
+        {
+            Debug.Log(dotGround);
             return cachedNormal;
+        }
+        else return Vector3.up;
+    }
+
+    public Vector3 GetGroundNormal()
+    {
+        RaycastHit hitFo;
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out hitFo, rayDistance))
+        {
+            dotGround = hitFo.normal;
+            return dotGround;
+        }
         else return Vector3.up;
     }
 
@@ -96,14 +110,34 @@ public class CollisionSenses : MonoBehaviour
         RaycastHit hitFo;
         Vector3 cachedNormal;
 
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hitFo, rayDistance * 2f))
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hitFo, rayDistance))
+        {
             if(CheckIsSlope()) return true;
-        else if (Physics.Raycast(transform.position, transform.TransformDirection(1.5f, 0, 1), out hitFo, rayDistance * 2f))
-            if(CheckIsSlope()) return true;
-        else if (Physics.Raycast(transform.position, transform.TransformDirection(-1.5f, 0, 1), out hitFo, rayDistance * 2f))
-            if(CheckIsSlope()) return true;
-        else if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.down), out hitFo, rayDistance * 2f))
-            if(CheckIsSlope()) return true;
+        }
+        else if (Physics.Raycast(transform.position, transform.TransformDirection(-Vector3.forward), out hitFo, rayDistance))
+        {
+            if (CheckIsSlope()) return true;
+        }
+        else if (Physics.Raycast(transform.position, transform.TransformDirection(1.5f, 0, 1), out hitFo, rayDistance))
+        {
+            if (CheckIsSlope()) return true;
+        }
+        else if (Physics.Raycast(transform.position, transform.TransformDirection(-1.5f, 0, 1), out hitFo, rayDistance))
+        {
+            if (CheckIsSlope()) return true;        
+        }
+        else if (Physics.Raycast(transform.position, -transform.TransformDirection(1.5f, 0, 1), out hitFo, rayDistance))
+        {
+            if (CheckIsSlope()) return true;
+        }
+        else if (Physics.Raycast(transform.position, -transform.TransformDirection(-1.5f, 0, 1), out hitFo, rayDistance))
+        {
+            if (CheckIsSlope()) return true;
+        }
+        else if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.up *0.3f + Vector3.down), out hitFo, rayDistance))
+        {
+            if (CheckIsSlope()) return true;
+        }
 
         return false;
 
@@ -112,10 +146,12 @@ public class CollisionSenses : MonoBehaviour
             cachedNormal = hitFo.normal;
             //Converting angle to dot
             float angleToRadians = minGroundAngle * Mathf.Deg2Rad;
-            dotGround = Mathf.Cos(angleToRadians);
+            float dotGround = Mathf.Cos(angleToRadians);
             //Comparing if raycast is considered Ground
             if (cachedNormal.y < dotGround)
+            {
                 return true;
+            }
             else return false;
         }
     }
