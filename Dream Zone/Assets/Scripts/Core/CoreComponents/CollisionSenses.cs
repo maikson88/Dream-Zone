@@ -30,11 +30,11 @@ public class CollisionSenses : MonoBehaviour
 
     [Header("Layers")]
     public LayerMask groundLayers;
-    public LayerMask wallRunUpLayer;
+    public LayerMask wallRunLayer;
 
     public Vector3 dotGround { get; private set; }
 
-    public bool StepCheck()
+    public bool CheckStep()
     {
         RaycastHit hitLower;
         if (Physics.Raycast(smallStepLower.transform.position, transform.TransformDirection(Vector3.forward), out hitLower, rayDistance))
@@ -89,7 +89,7 @@ public class CollisionSenses : MonoBehaviour
         float dotGround = Mathf.Cos(angleToRadians);
 
         //Comparing if raycast is considered Ground
-        if (CheckIfTouchingGround() && cachedNormal.y >= dotGround)
+        if (CheckTouchingGround() && cachedNormal.y >= dotGround)
         {
             Debug.Log(dotGround);
             return cachedNormal;
@@ -108,7 +108,7 @@ public class CollisionSenses : MonoBehaviour
         else return Vector3.up;
     }
 
-    public bool CheckIfTheresSlopeNear()
+    public bool CheckTheresSlopeNear()
     {
         RaycastHit hitFo;
         Vector3 cachedNormal;
@@ -159,18 +159,38 @@ public class CollisionSenses : MonoBehaviour
         }
     }
 
-    public bool CheckIfTouchingGround()
+    public bool CheckTouchingGround()
     {
         if (Physics.CheckSphere(groundCheck.position + groundCheckOffset, groundCheckRadius, groundLayers))
             return true;
         else return false;
     }
 
-    public bool WallRunCheck()
+    public bool CheckWallRun()
     {
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), rayDistance, wallRunUpLayer))
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), rayDistance, wallRunLayer))
             return true;
         else return false;
+    }
+
+    public bool CheckWallRight()
+    {
+        return Physics.Raycast(transform.position, transform.TransformDirection(Vector3.right), 1f, wallRunLayer);
+    }
+
+    public Vector3 GetWallRightNormal()
+    {
+        RaycastHit hitFo;
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.right), out hitFo, 1f, wallRunLayer))
+        {
+            return hitFo.normal;
+        }
+        else return Vector3.zero;
+    }
+
+    public bool CheckWallLeft()
+    {
+        return Physics.Raycast(transform.position, transform.TransformDirection(Vector3.left), 1f, wallRunLayer);
     }
 
     private void OnDrawGizmos()
@@ -188,7 +208,7 @@ public class CollisionSenses : MonoBehaviour
         Gizmos.DrawRay(smallStepUpper.transform.position, transform.TransformDirection(new Vector3(-1.5f, 0, 1) * rayDistance));
 
         Gizmos.color = Color.red;
-        if(CheckIfTouchingGround()) Gizmos.color = Color.green;
+        if(CheckTouchingGround()) Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position + groundCheckOffset, groundCheckRadius);
     }
 }
