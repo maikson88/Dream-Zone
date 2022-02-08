@@ -11,8 +11,6 @@ public class CollisionSenses : MonoBehaviour
     [SerializeField]
     private Transform smallStepLower;
     [SerializeField]
-    private Vector3 climbVelocity = Vector3.up * 5f;
-    [SerializeField]
     private float rayDistance = 0.5f;
 
     [Header("GroundCheck")]
@@ -23,11 +21,16 @@ public class CollisionSenses : MonoBehaviour
     [SerializeField]
     private float groundCheckRadius;
 
+    [Header("GeneralCheck")]
+    [SerializeField]
+    private Transform chestCheck;
+
     [Header("Slopes and Snapping")]
     public float minGroundAngle = 25;
 
     [Header("Layers")]
     public LayerMask groundLayers;
+    public LayerMask wallRunUpLayer;
 
     public Vector3 dotGround { get; private set; }
 
@@ -159,6 +162,13 @@ public class CollisionSenses : MonoBehaviour
     public bool CheckIfTouchingGround()
     {
         if (Physics.CheckSphere(groundCheck.position + groundCheckOffset, groundCheckRadius, groundLayers))
+            return true;
+        else return false;
+    }
+
+    public bool WallRunCheck()
+    {
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), rayDistance, wallRunUpLayer))
             return true;
         else return false;
     }

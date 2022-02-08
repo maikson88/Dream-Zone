@@ -9,10 +9,6 @@ public class PlayerMovement : MonoBehaviour
     public rbMode movementMode;
     public float rbMaxFallSpeed { get; private set; }
 
-    [SerializeField] private float rbVelocityMultiplier = 6f;
-    [SerializeField] private float sizeOfSteps = -15f;
-    [SerializeField] [Range(0,15)] private float ClimbingHardness = -15f;
-
     private PlayerCore playerCore;
     public Vector3 playerMovement;
     private Tools rbModeTimer;
@@ -41,8 +37,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!playerCore.collisionSenses.CheckIfTouchingGround() && playerCore.playerController.rb.velocity.y < -5f)
         {
-            if (playerCore.playerController.rb.velocity.magnitude > rbMaxFallSpeed)
-                playerCore.playerController.rb.velocity = Vector3.ClampMagnitude(playerCore.playerController.rb.velocity, rbMaxFallSpeed);
+            if (playerCore.playerController.rb.velocity.magnitude > playerCore.playerData.maxFallVelocity)
+                playerCore.playerController.rb.velocity = Vector3.ClampMagnitude(playerCore.playerController.rb.velocity, playerCore.playerData.maxFallVelocity);
         }
     }
 
@@ -81,7 +77,7 @@ public class PlayerMovement : MonoBehaviour
         {
             playerMovement = playerCore.playerController.xDirection + playerCore.playerController.yDirection;
             Vector3 groundNormal = playerCore.collisionSenses.GetGroundNormal();
-            playerMovement *= (playerSpeed + rbVelocityMultiplier);
+            playerMovement *= (playerSpeed + playerCore.playerData.rbVelocityMultiplier);
             Vector3 projectedMovement = playerMovement - groundNormal * Vector3.Dot(groundNormal, playerMovement.normalized);
             Vector3 newMovement = new Vector3(projectedMovement.x, playerCore.playerController.rb.velocity.y, projectedMovement.z);
             if (playerCore.playerController.rb.velocity.y > 0)
@@ -93,7 +89,7 @@ public class PlayerMovement : MonoBehaviour
     public void FlyMovement(float playerSpeed)
     {
         playerMovement = playerCore.playerController.xDirection + playerCore.playerController.yDirection;
-        playerMovement *= playerSpeed + rbVelocityMultiplier;
+        playerMovement *= playerSpeed + playerCore.playerData.rbVelocityMultiplier;
         playerCore.playerController.rb.velocity = new Vector3(playerMovement.x, playerMovement.y, playerMovement.z);
     }
 
@@ -145,7 +141,7 @@ public class PlayerMovement : MonoBehaviour
             movementMode = rbMode.Teleport;
             if (!playerCore.collisionSenses.CheckIfTheresSlopeNear() && playerCore.collisionSenses.CheckIfTouchingGround())
             {
-                playerCore.playerController.rb.position -= new Vector3(0f, sizeOfSteps * Time.deltaTime, 0f);
+                playerCore.playerController.rb.position -= new Vector3(0f, playerCore.playerData.maxSizeOfStairs * Time.deltaTime, 0f);
             }
             rbModeTimer.ResetTime();
         }

@@ -5,13 +5,9 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(InputHandler))]
 public class PlayerController : MonoBehaviour
 {
-    public enum playerStates { groundMoving, idleJumping, runJumping, superJumping, onAir, waiting };
+    public enum playerStates { groundMoving, idleJumping, runJumping, superJumping, onAir, wallRunning, waiting };
     public playerStates currentState;
 
-    [SerializeField]
-    private float playerSpeed = 2.0f;
-    [SerializeField]
-    private float jumpForce;
     [SerializeField]
     private PlayerCore playerCore;
 
@@ -36,7 +32,7 @@ public class PlayerController : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
         JumpBuffer = new Tools();
         currentState = playerStates.groundMoving;
-        playerCore.playerMovement.setFallVelocity(25f);
+        playerCore.playerMovement.setFallVelocity(playerCore.playerData.maxFallVelocity);
     }
 
     private void FixedUpdate()
@@ -89,6 +85,10 @@ public class PlayerController : MonoBehaviour
                 SuperJump();
                 break;
 
+            case playerStates.wallRunning:
+                WallRun();
+                break;
+
             case playerStates.waiting:
                 break;
         }
@@ -100,7 +100,7 @@ public class PlayerController : MonoBehaviour
     {
         anim.SetBool("isGroundMoving", true);
 
-        playerCore.playerMovement.Movement(playerSpeed);
+        playerCore.playerMovement.Movement(playerCore.playerData.playerSpeed);
 
         if (canJump && playerInput.JumpInput) isJumping = true;
         anim.SetBool("isJumping", isJumping);
@@ -124,11 +124,17 @@ public class PlayerController : MonoBehaviour
             anim.SetBool("isGroundMoving", false);
             currentState = playerStates.runJumping;
         }
+
+        else if (playerCore.collisionSenses.WallRunCheck())
+        {
+            anim.SetBool("isGroundMoving", false);
+            currentState = playerStates.wallRunning;
+        }
     }
 
     private void RunJumping()
     {
-        playerCore.playerMovement.JumpUpward(jumpForce);
+        playerCore.playerMovement.JumpUpward(playerCore.playerData.jumpForce);
         currentState = playerStates.onAir;
     }
 
@@ -157,7 +163,7 @@ public class PlayerController : MonoBehaviour
             playerCore.animEvents.SuperJump(false);
             if (playerCore.animEvents.JumpUpFinished)
             {
-                playerCore.playerMovement.JumpUpward(jumpForce);
+                playerCore.playerMovement.JumpUpward(playerCore.playerData.jumpForce);
                 currentState = playerStates.onAir;
             }
         }
@@ -179,7 +185,7 @@ public class PlayerController : MonoBehaviour
             anim.SetBool("isFalling", true);
         }
 
-        playerCore.playerMovement.Movement(playerSpeed);
+        playerCore.playerMovement.Movement(playerCore.playerData.playerSpeed);
 
         if (onGround && rb.velocity.y <= 0)
         {
@@ -192,7 +198,7 @@ public class PlayerController : MonoBehaviour
     {
         if (onGround)
         {
-            playerCore.playerMovement.JumpUpward(jumpForce * 4);
+            playerCore.playerMovement.JumpUpward(playerCore.playerData.jumpForce * 4);
             playerCore.playerVfx.SetVfxSuperJump(true);
             Quaternion targetRotation = Quaternion.Euler(-90, transform.rotation.y, 0);
             transform.rotation = targetRotation;
@@ -205,6 +211,14 @@ public class PlayerController : MonoBehaviour
             playerCore.playerVfx.SetVfxSuperJump(false);
             currentState = playerStates.onAir;
         }
+    }
+
+    private void WallRun()
+    {
+        //Vector3 WallRunHeigh = Vector3.zero;
+        //WallRunHeigh = Vector3.up * 50;
+        //rb.velocity = Vector3.Lerp(rb.velocity, WallRunHeigh, 20);
+
     }
 
     public bool IsJumpingReset() => isJumping = false;

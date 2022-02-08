@@ -11,6 +11,7 @@ public class PlayerCore : MonoBehaviour
     public PlayerMovement playerMovement { get; private set; }
     public PlayerController playerController;
     public NinianeAnimEvents animEvents;
+    public PlayerData playerData;
 
     private void Awake()
     {
