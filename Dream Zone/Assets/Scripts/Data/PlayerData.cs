@@ -15,4 +15,13 @@ public class PlayerData : ScriptableObject
     public float playerSpeed = 9f;
     public float rbVelocityMultiplier = 1f;
     public float maxSizeOfStairs = -1f;
+
+    [Header("WallRun State")]
+    public float wallRunForce;
+    public float maxwallRunTime;
+    public float maxWallSpeed;
+    public float normalWallJumpMultiplier;
+    public float upWallJumpMultiplier;
+    public float fowardWallJumpMultiplier;
+
 }
