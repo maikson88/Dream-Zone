@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        onGround = playerCore.collisionSenses.CheckIfTouchingGround();
+        onGround = playerCore.collisionSenses.CheckTouchingGround();
         playerCore.playerMovement.PlayerRotation();
         SwitchStates();
     }
@@ -125,7 +125,7 @@ public class PlayerController : MonoBehaviour
             currentState = playerStates.runJumping;
         }
 
-        else if (playerCore.collisionSenses.WallRunCheck())
+        else if (playerCore.collisionSenses.CheckWallRun() && playerInput.ActionInput)
         {
             anim.SetBool("isGroundMoving", false);
             currentState = playerStates.wallRunning;
@@ -185,7 +185,22 @@ public class PlayerController : MonoBehaviour
             anim.SetBool("isFalling", true);
         }
 
+        if(playerInput.NormalizedMovementInput != Vector2.zero)
         playerCore.playerMovement.Movement(playerCore.playerData.playerSpeed);
+
+
+        if (playerCore.collisionSenses.CheckWallLeft() && playerInput.ActionInput)
+        {
+            //rb.velocity = Vector3.zero;
+            currentState = playerStates.wallRunning;
+        }
+
+        if (playerCore.collisionSenses.CheckWallRight() && playerInput.ActionInput)
+        {
+            //rb.velocity = Vector3.zero;
+            currentState = playerStates.wallRunning;
+        }
+
 
         if (onGround && rb.velocity.y <= 0)
         {
@@ -215,9 +230,48 @@ public class PlayerController : MonoBehaviour
 
     private void WallRun()
     {
-        //Vector3 WallRunHeigh = Vector3.zero;
-        //WallRunHeigh = Vector3.up * 50;
-        //rb.velocity = Vector3.Lerp(rb.velocity, WallRunHeigh, 20);
+        rb.useGravity = false;
+
+        if (rb.velocity.magnitude <= playerCore.playerData.maxWallSpeed)
+        {
+            rb.AddForce(transform.TransformDirection(Vector3.forward) * playerCore.playerData.wallRunForce * Time.fixedDeltaTime);
+        }
+
+        //Stick into Wall
+        if (playerCore.collisionSenses.CheckWallRight())
+            rb.AddForce(transform.TransformDirection(Vector3.right) * playerCore.playerData.wallRunForce / 5 * Time.fixedDeltaTime);
+        else if(playerCore.collisionSenses.CheckWallLeft())
+            rb.AddForce(-transform.TransformDirection(Vector3.right) * playerCore.playerData.wallRunForce / 5 * Time.fixedDeltaTime);
+
+        //Jump in Opposit Direction
+        if (playerCore.collisionSenses.CheckWallRight() && playerInput.isJumpPressed > 0)
+        {
+            rb.useGravity = true;
+
+            Vector3 JumpDirection = (
+                playerCore.collisionSenses.GetWallRightNormal() * playerCore.playerData.normalWallJumpMultiplier
+                + Vector3.up * playerCore.playerData.upWallJumpMultiplier
+                + Vector3.forward * playerCore.playerData.fowardWallJumpMultiplier);
+
+            playerCore.playerMovement.DirectionalJump(JumpDirection, playerCore.playerData.jumpForce);
+            currentState = playerStates.onAir;
+        }
+
+        if (playerCore.collisionSenses.CheckWallLeft() && playerInput.isJumpPressed > 0)
+        {
+            rb.useGravity = true;
+            rb.AddForce(transform.TransformDirection(Vector3.up) * playerCore.playerData.jumpForce * 3.2f);
+            rb.AddForce(transform.TransformDirection(Vector3.right) * playerCore.playerData.jumpForce * 3.2f);
+            rb.AddForce(transform.TransformDirection(Vector3.forward) * playerCore.playerData.jumpForce * 1f);
+            currentState = playerStates.onAir;
+        }
+
+
+        if (!playerCore.collisionSenses.CheckWallRight() && !playerCore.collisionSenses.CheckWallLeft())
+        {
+            rb.useGravity = true;
+            currentState = playerStates.onAir;
+        }
 
     }
 
@@ -228,24 +282,29 @@ public class PlayerController : MonoBehaviour
 #if UNITY_EDITOR
     void OnGUI()
     {
+        GUIStyle guiStyle = new GUIStyle();
+
         string currentStateDebug = currentState.ToString(); 
         GUI.Box(new Rect(0, 0, 200, 25), currentStateDebug);
 
-        string checkGround = "Ground : " + playerCore.collisionSenses.CheckIfTouchingGround();
+        string checkGround = "Ground : " + playerCore.collisionSenses.CheckTouchingGround();
         GUI.Box(new Rect(335, 0, 125, 25), checkGround);
 
-        //TO_DO
-        //string checkGrabbable = "Grabbable : " + CheckIfIsGrabbable();
-        //GUI.Box(new Rect(205, 0, 125, 25), checkGrabbable);
+        string checkGrabbable = "Slope : " + playerCore.collisionSenses.CheckTheresSlopeNear(); ;
+        GUI.Box(new Rect(205, 0, 125, 25), checkGrabbable);
 
-        //string checkWall = "Wall : " + CheckIfTouchingWall();
-        //GUI.Box(new Rect(465, 0, 125, 25), checkWall);
+        string checkWallAbove = "Stairs: " + playerCore.collisionSenses.CheckStep(); ;
+        GUI.Box(new Rect(465, 0, 125, 25), checkWallAbove);
 
-        //string checkWallAbove = "Wall Above: " + CheckIfTouchingWallAbove();
-        //GUI.Box(new Rect(595, 0, 125, 25), checkWallAbove);
 
-        //string checkWallBack = "Wall Back: " + CheckIfTouchingWallBack();
-        //GUI.Box(new Rect(730, 0, 125, 25), checkWallBack);
+        string checkWallRun = "Wall Front : " + playerCore.collisionSenses.CheckWallRun(); ;
+        GUI.Box(new Rect(625, 160, 125, 25), checkWallRun);
+
+        string checkWallRight = "Wall Right: " + playerCore.collisionSenses.CheckWallRight();
+        GUI.Box(new Rect(700, 200, 125, 25), checkWallRight);
+
+        string checkWallLeft = "Wall Left: " + playerCore.collisionSenses.CheckWallLeft();
+        GUI.Box(new Rect(550, 200, 125, 25), checkWallLeft);
 
         if (currentState.ToString() != _previousState)
             //Debug.Log(string.Concat("State : ", currentStateDebug));
