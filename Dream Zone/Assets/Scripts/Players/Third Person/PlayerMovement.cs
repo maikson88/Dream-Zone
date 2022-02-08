@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
     public enum rbMode { Velocity, Teleport, Gravity };
     public rbMode movementMode;
     public float rbMaxFallSpeed { get; private set; }
+    public float ClimbHardness;
 
     private PlayerCore playerCore;
     public Vector3 playerMovement;
@@ -31,14 +32,19 @@ public class PlayerMovement : MonoBehaviour
         ClampVelocity();
     }
 
-
+    public void GravityMultiplier() => playerCore.playerController.rb.AddForce(Vector3.down * Time.deltaTime * 1f);
 
     public void ClampVelocity()
     {
-        if (!playerCore.collisionSenses.CheckIfTouchingGround() && playerCore.playerController.rb.velocity.y < -5f)
+        if (!playerCore.collisionSenses.CheckTouchingGround() && playerCore.playerController.rb.velocity.y < -5f)
         {
             if (playerCore.playerController.rb.velocity.magnitude > playerCore.playerData.maxFallVelocity)
                 playerCore.playerController.rb.velocity = Vector3.ClampMagnitude(playerCore.playerController.rb.velocity, playerCore.playerData.maxFallVelocity);
+        }
+
+        if(playerCore.playerController.currentState != PlayerController.playerStates.superJumping && playerCore.playerController.rb.velocity.magnitude > 20)
+        {
+            playerCore.playerController.rb.velocity = Vector3.ClampMagnitude(playerCore.playerController.rb.velocity, 10f);
         }
     }
 
@@ -49,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
             return false;
         }
 
-        if (playerCore.collisionSenses.CheckIfTheresSlopeNear() || hit.transform.gameObject.layer == 12)
+        if (playerCore.collisionSenses.CheckTheresSlopeNear() || hit.transform.gameObject.layer == 12)
         {
             float speed = playerCore.playerController.rb.velocity.magnitude;
             float dot = Vector3.Dot(playerCore.playerController.rb.velocity, hit.normal);
@@ -81,8 +87,9 @@ public class PlayerMovement : MonoBehaviour
             Vector3 projectedMovement = playerMovement - groundNormal * Vector3.Dot(groundNormal, playerMovement.normalized);
             Vector3 newMovement = new Vector3(projectedMovement.x, playerCore.playerController.rb.velocity.y, projectedMovement.z);
             if (playerCore.playerController.rb.velocity.y > 0)
-                newMovement = new Vector3(projectedMovement.x * groundNormal.y, playerCore.playerController.rb.velocity.y, projectedMovement.z * groundNormal.y);
-            playerCore.playerController.rb.velocity = newMovement;
+                newMovement = new Vector3(projectedMovement.x * (groundNormal.y - ClimbHardness), playerCore.playerController.rb.velocity.y, projectedMovement.z * (groundNormal.y - ClimbHardness));
+
+            playerCore.playerController.rb.velocity = new Vector3(newMovement.x, playerCore.playerController.rb.velocity.y, newMovement.z);
         }
     }
 
@@ -123,6 +130,11 @@ public class PlayerMovement : MonoBehaviour
         playerCore.playerController.rb.velocity += playerCore.collisionSenses.GetGroundNormal() * jumpForce;
     }
 
+    public void DirectionalJump(Vector3 direction, float jumpForce)
+    {
+        playerCore.playerController.rb.velocity += direction * jumpForce;
+    }
+
     public void ChangeRbMode()
     {
         if (!playerCore.playerController.isJumping)
@@ -135,11 +147,11 @@ public class PlayerMovement : MonoBehaviour
         }
 
 
-        if (playerCore.collisionSenses.StepCheck() && playerCore.playerController.playerInput.NormalizedMovementInput != Vector2.zero)
+        if (playerCore.collisionSenses.CheckStep() && playerCore.playerController.playerInput.NormalizedMovementInput != Vector2.zero)
         {
             playerCore.playerController.rb.velocity = Vector3.zero;
             movementMode = rbMode.Teleport;
-            if (!playerCore.collisionSenses.CheckIfTheresSlopeNear() && playerCore.collisionSenses.CheckIfTouchingGround())
+            if (!playerCore.collisionSenses.CheckTheresSlopeNear() && playerCore.collisionSenses.CheckTouchingGround())
             {
                 playerCore.playerController.rb.position -= new Vector3(0f, playerCore.playerData.maxSizeOfStairs * Time.deltaTime, 0f);
             }
