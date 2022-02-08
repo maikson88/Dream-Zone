@@ -17,9 +17,9 @@ MonoBehaviour:
   playerSpeed: 9
   rbVelocityMultiplier: 1
   maxSizeOfStairs: -1
-  groundLayers:
-    serializedVersion: 2
-    m_Bits: 6145
-  wallRunLayer:
-    serializedVersion: 2
-    m_Bits: 8192
+  wallRunForce: 300
+  maxwallRunTime: 129.1
+  maxWallSpeed: 100
+  normalWallJumpMultiplier: 1
+  upWallJumpMultiplier: 1.5
+  fowardWallJumpMultiplier: 0.8
