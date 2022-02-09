@@ -45,6 +45,7 @@ public class NinianeAnimEvents : MonoBehaviour
     public void SkipAnimationTo(string targetAnim)
     {
         anim.GetComponent<Animator>().enabled = false;
+        ResetAllParameters();
         anim.GetComponent<Animator>().enabled = true;
         anim.Play(targetAnim);
     }
@@ -65,5 +66,15 @@ public class NinianeAnimEvents : MonoBehaviour
         currentAnim = GetCurrentAnim();
         if (currentAnim != previousAnim) Debug.Log(string.Concat("Animation: ", currentAnim));
         previousAnim = currentAnim;
+    }
+
+    public void ResetAllParameters()
+    {
+        anim.SetBool("isNormalJump", false);
+        anim.SetBool("isSuperJump", false);
+        anim.SetBool("isJumping", false);
+        anim.SetBool("isFalling", false);
+        anim.SetBool("isReadyToJump", false);
+        anim.SetBool("isGroundMoving", false);
     }
 }

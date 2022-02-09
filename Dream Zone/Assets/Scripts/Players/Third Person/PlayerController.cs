@@ -224,14 +224,27 @@ public class PlayerController : MonoBehaviour
     {
         rb.useGravity = false;
 
+
+        playerCore.animEvents.SkipAnimationTo("Movement");
+        anim.SetFloat("Running Speed", 1);
+
+
         //Stick to wall and Run
         if (playerCore.collisionSenses.CheckWallRight())
-        {
+        {  
+            Quaternion playerRotation = Quaternion.LookRotation(playerCore.collisionSenses.GetWallRightNormal());
+            playerRotation *= Quaternion.LookRotation(Vector3.right) * Quaternion.Euler(0, 0, 30);
+            transform.rotation = playerRotation;
+
             rb.AddForce(transform.TransformDirection(Vector3.right));
             playerCore.playerMovement.DirectionalVelocity(transform.TransformDirection(Vector3.forward), playerCore.playerData.jumpForce, false);
         }
         else if (playerCore.collisionSenses.CheckWallLeft())
         {
+            Quaternion playerRotation = Quaternion.LookRotation(playerCore.collisionSenses.GetWallLeftNormal());
+            playerRotation *= Quaternion.LookRotation(Vector3.left) * Quaternion.Euler(0, 0, -30);
+            transform.rotation = playerRotation;
+
             rb.AddForce(transform.TransformDirection(Vector3.left));
             playerCore.playerMovement.DirectionalVelocity(transform.TransformDirection(Vector3.forward), playerCore.playerData.jumpForce, false);
         }
@@ -249,10 +262,12 @@ public class PlayerController : MonoBehaviour
                 + transform.TransformDirection(Vector3.up) * playerCore.playerData.upWallJumpMultiplier
                 + transform.TransformDirection(Vector3.forward) * playerCore.playerData.fowardWallJumpMultiplier);
 
-            Debug.Log(JumpDirection);
-
             playerCore.playerMovement.DirectionalVelocity(JumpDirection, playerCore.playerData.jumpForce, true);
-            currentState = playerStates.onAir;
+
+
+            anim.SetBool("isJumping", true);
+            anim.SetBool("isGroundMoving", false);
+            currentState = playerStates.runJumping;
         }
 
 
