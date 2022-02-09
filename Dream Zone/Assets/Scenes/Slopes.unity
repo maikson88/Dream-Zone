@@ -18972,6 +18972,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8227827923396134340, guid: 07a46b49b5049f741b7c3b6600d8c300,
         type: 3}
+      propertyPath: groundLayers.m_Bits
+      value: 14337
+      objectReference: {fileID: 0}
+    - target: {fileID: 8227827923396134340, guid: 07a46b49b5049f741b7c3b6600d8c300,
+        type: 3}
       propertyPath: wallRunUpLayer.m_Bits
       value: 8192
       objectReference: {fileID: 0}
@@ -28953,7 +28958,7 @@ PrefabInstance:
     - target: {fileID: 8171105026498551067, guid: 0194a6b14dd3e2745ac3628a0455b089,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 26.030262
+      value: 26.083977
       objectReference: {fileID: 0}
     - target: {fileID: 8171105026498551067, guid: 0194a6b14dd3e2745ac3628a0455b089,
         type: 3}

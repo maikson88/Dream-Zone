@@ -36,6 +36,8 @@ public class CollisionSenses : MonoBehaviour
 
     public bool CheckStep()
     {
+        if (CheckTheresSlopeNear()) return false;
+
         RaycastHit hitLower;
         if (Physics.Raycast(smallStepLower.transform.position, transform.TransformDirection(Vector3.forward), out hitLower, rayDistance))
         {
@@ -113,27 +115,27 @@ public class CollisionSenses : MonoBehaviour
         RaycastHit hitFo;
         Vector3 cachedNormal;
 
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hitFo, rayDistance))
-        {
-            if(CheckIsSlope()) return true;
-        }
-
-        else if (Physics.Raycast(transform.position, transform.TransformDirection(1.5f, 0, 1), out hitFo, rayDistance))
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hitFo, rayDistance, groundLayers))
         {
             if (CheckIsSlope()) return true;
         }
 
-        else if (Physics.Raycast(transform.position,-transform.TransformDirection(-1.5f, 0, 1), out hitFo, rayDistance))
+        else if (Physics.Raycast(transform.position, transform.TransformDirection(1.5f, 0, 1), out hitFo, rayDistance, groundLayers))
         {
             if (CheckIsSlope()) return true;
         }
 
-        else if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.up *0.3f + Vector3.down), out hitFo, rayDistance))
+        else if (Physics.Raycast(transform.position,-transform.TransformDirection(-1.5f, 0, 1), out hitFo, rayDistance, groundLayers))
         {
             if (CheckIsSlope()) return true;
         }
 
-        return false;
+        else if (Physics.Raycast(chestCheck.position, transform.TransformDirection(Vector3.down), out hitFo, 2.5f, groundLayers))
+        {
+            if (CheckIsSlope()) return true;
+        }
+
+            return false;
 
         bool CheckIsSlope()
         {
@@ -141,13 +143,18 @@ public class CollisionSenses : MonoBehaviour
             //Converting angle to dot
             float angleToRadians = minGroundAngle * Mathf.Deg2Rad;
             float dotGround = Mathf.Cos(angleToRadians);
+            float dotSlope = Vector3.Dot(hitFo.normal, Vector3.up); ;
 
             //Comparing if raycast is considered Ground
-            if (cachedNormal.y < dotGround)
+            if (Mathf.Abs(dotSlope) > 0.7 && Mathf.Abs(dotSlope) < 0.95)
             {
                 return true;
             }
-            else return false;
+            else
+            {
+                return false;
+            }
+
         }
     }
 

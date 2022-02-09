@@ -174,7 +174,7 @@ public class PlayerMovement : MonoBehaviour
         {
             playerCore.playerController.rb.velocity = Vector3.zero;
             movementMode = rbMode.Teleport;
-            if (!playerCore.collisionSenses.CheckTheresSlopeNear() && playerCore.collisionSenses.CheckTouchingGround())
+            if (playerCore.collisionSenses.CheckTouchingGround())
             {
                 playerCore.playerController.rb.position -= new Vector3(0f, playerCore.playerData.maxSizeOfStairs * Time.deltaTime, 0f);
             }
