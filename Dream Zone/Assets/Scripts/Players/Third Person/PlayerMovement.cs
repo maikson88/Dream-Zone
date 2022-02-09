@@ -30,9 +30,17 @@ public class PlayerMovement : MonoBehaviour
             SnapToGround();
         ChangeRbMode();
         ClampVelocity();
+        GravityMultiplier();
     }
 
-    public void GravityMultiplier() => playerCore.playerController.rb.AddForce(Vector3.down * Time.deltaTime * 1f);
+    private void GravityMultiplier()
+    {
+        if (playerCore.playerController.rb.velocity.y < 0)
+            playerCore.playerController.rb.velocity = new Vector3(
+                playerCore.playerController.rb.velocity.x, 
+                playerCore.playerController.rb.velocity.y * playerCore.playerData.gravityForce,
+                playerCore.playerController.rb.velocity.z);
+    }
 
     public void ClampVelocity()
     {
@@ -42,9 +50,9 @@ public class PlayerMovement : MonoBehaviour
                 playerCore.playerController.rb.velocity = Vector3.ClampMagnitude(playerCore.playerController.rb.velocity, playerCore.playerData.maxFallVelocity);
         }
 
-        if(playerCore.playerController.currentState != PlayerController.playerStates.superJumping && playerCore.playerController.rb.velocity.magnitude > 20)
+        if(playerCore.playerController.currentState != PlayerController.playerStates.superJumping && playerCore.playerController.rb.velocity.magnitude > 15)
         {
-            playerCore.playerController.rb.velocity = Vector3.ClampMagnitude(playerCore.playerController.rb.velocity, 10f);
+            playerCore.playerController.rb.velocity = Vector3.ClampMagnitude(playerCore.playerController.rb.velocity, 15f);
         }
     }
 
@@ -68,8 +76,20 @@ public class PlayerMovement : MonoBehaviour
         else return false;
     }
 
+        bool noMovement;
     public void Movement(float playerSpeed)
     {
+        if (playerCore.playerController.playerInput.NormalizedMovementInput != Vector2.zero) noMovement = false;
+        if (noMovement) return;
+
+
+       
+       if(playerCore.playerController.rb.velocity != Vector3.zero && playerCore.playerController.playerInput.NormalizedMovementInput == Vector2.zero)
+        {
+            playerCore.playerController.rb.velocity = Vector3.zero;
+            noMovement = true;
+        }
+
         if (movementMode == rbMode.Teleport)
         {
             playerMovement = playerCore.playerController.xDirection + playerCore.playerController.yDirection;
@@ -130,9 +150,12 @@ public class PlayerMovement : MonoBehaviour
         playerCore.playerController.rb.velocity += playerCore.collisionSenses.GetGroundNormal() * jumpForce;
     }
 
-    public void DirectionalJump(Vector3 direction, float jumpForce)
+    public void DirectionalVelocity(Vector3 direction, float jumpForce, bool momentum)
     {
-        playerCore.playerController.rb.velocity += direction * jumpForce;
+        if(momentum)
+            playerCore.playerController.rb.velocity += direction * jumpForce;
+        else
+            playerCore.playerController.rb.velocity = direction * jumpForce;
     }
 
     public void ChangeRbMode()
