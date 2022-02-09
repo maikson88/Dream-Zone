@@ -15,6 +15,7 @@ public class PlayerData : ScriptableObject
     public float playerSpeed = 9f;
     public float rbVelocityMultiplier = 1f;
     public float maxSizeOfStairs = -1f;
+    public float gravityForce;
 
     [Header("WallRun State")]
     public float wallRunForce;
