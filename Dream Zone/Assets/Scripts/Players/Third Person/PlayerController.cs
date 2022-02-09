@@ -100,7 +100,7 @@ public class PlayerController : MonoBehaviour
     {
         anim.SetBool("isGroundMoving", true);
 
-        playerCore.playerMovement.Movement(playerCore.playerData.playerSpeed);
+        playerCore.playerMovement.Movement(playerCore.playerData.playerSpeed);  
 
         if (canJump && playerInput.JumpInput) isJumping = true;
         anim.SetBool("isJumping", isJumping);
@@ -123,12 +123,6 @@ public class PlayerController : MonoBehaviour
         {
             anim.SetBool("isGroundMoving", false);
             currentState = playerStates.runJumping;
-        }
-
-        else if (playerCore.collisionSenses.CheckWallRun() && playerInput.ActionInput)
-        {
-            anim.SetBool("isGroundMoving", false);
-            currentState = playerStates.wallRunning;
         }
     }
 
@@ -186,18 +180,16 @@ public class PlayerController : MonoBehaviour
         }
 
         if(playerInput.NormalizedMovementInput != Vector2.zero)
-        playerCore.playerMovement.Movement(playerCore.playerData.playerSpeed);
+            playerCore.playerMovement.Movement(playerCore.playerData.playerSpeed);
 
 
         if (playerCore.collisionSenses.CheckWallLeft() && playerInput.ActionInput)
         {
-            //rb.velocity = Vector3.zero;
             currentState = playerStates.wallRunning;
         }
 
         if (playerCore.collisionSenses.CheckWallRight() && playerInput.ActionInput)
         {
-            //rb.velocity = Vector3.zero;
             currentState = playerStates.wallRunning;
         }
 
@@ -232,39 +224,38 @@ public class PlayerController : MonoBehaviour
     {
         rb.useGravity = false;
 
-        if (rb.velocity.magnitude <= playerCore.playerData.maxWallSpeed)
-        {
-            rb.AddForce(transform.TransformDirection(Vector3.forward) * playerCore.playerData.wallRunForce * Time.fixedDeltaTime);
-        }
-
-        //Stick into Wall
+        //Stick to wall and Run
         if (playerCore.collisionSenses.CheckWallRight())
-            rb.AddForce(transform.TransformDirection(Vector3.right) * playerCore.playerData.wallRunForce / 5 * Time.fixedDeltaTime);
-        else if(playerCore.collisionSenses.CheckWallLeft())
-            rb.AddForce(-transform.TransformDirection(Vector3.right) * playerCore.playerData.wallRunForce / 5 * Time.fixedDeltaTime);
+        {
+            rb.AddForce(transform.TransformDirection(Vector3.right));
+            playerCore.playerMovement.DirectionalVelocity(transform.TransformDirection(Vector3.forward), playerCore.playerData.jumpForce, false);
+        }
+        else if (playerCore.collisionSenses.CheckWallLeft())
+        {
+            rb.AddForce(transform.TransformDirection(Vector3.left));
+            playerCore.playerMovement.DirectionalVelocity(transform.TransformDirection(Vector3.forward), playerCore.playerData.jumpForce, false);
+        }
 
         //Jump in Opposit Direction
-        if (playerCore.collisionSenses.CheckWallRight() && playerInput.isJumpPressed > 0)
+        if ( (playerCore.collisionSenses.CheckWallRight() || playerCore.collisionSenses.CheckWallLeft() ) && playerInput.isJumpPressed > 0)
         {
             rb.useGravity = true;
+            Vector3 wallNormal;
+            if ((playerCore.collisionSenses.CheckWallRight())) wallNormal = playerCore.collisionSenses.GetWallRightNormal();
+            else wallNormal = playerCore.collisionSenses.GetWallLeftNormal();
 
             Vector3 JumpDirection = (
-                playerCore.collisionSenses.GetWallRightNormal() * playerCore.playerData.normalWallJumpMultiplier
-                + Vector3.up * playerCore.playerData.upWallJumpMultiplier
-                + Vector3.forward * playerCore.playerData.fowardWallJumpMultiplier);
+                wallNormal * playerCore.playerData.normalWallJumpMultiplier
+                + transform.TransformDirection(Vector3.up) * playerCore.playerData.upWallJumpMultiplier
+                + transform.TransformDirection(Vector3.forward) * playerCore.playerData.fowardWallJumpMultiplier);
 
-            playerCore.playerMovement.DirectionalJump(JumpDirection, playerCore.playerData.jumpForce);
+            Debug.Log(JumpDirection);
+
+            playerCore.playerMovement.DirectionalVelocity(JumpDirection, playerCore.playerData.jumpForce, true);
             currentState = playerStates.onAir;
         }
 
-        if (playerCore.collisionSenses.CheckWallLeft() && playerInput.isJumpPressed > 0)
-        {
-            rb.useGravity = true;
-            rb.AddForce(transform.TransformDirection(Vector3.up) * playerCore.playerData.jumpForce * 3.2f);
-            rb.AddForce(transform.TransformDirection(Vector3.right) * playerCore.playerData.jumpForce * 3.2f);
-            rb.AddForce(transform.TransformDirection(Vector3.forward) * playerCore.playerData.jumpForce * 1f);
-            currentState = playerStates.onAir;
-        }
+
 
 
         if (!playerCore.collisionSenses.CheckWallRight() && !playerCore.collisionSenses.CheckWallLeft())
