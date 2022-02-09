@@ -28,6 +28,8 @@ For learning porpouses and a challenge to make a complete 3D platformer from scr
 - [x] Super Jump, Run, Jump, Shoot
 - [x] Climbing Stairs and any obstacle without applying external forces while moving with rigidbody.velocity
 - [x] Intercheable dynamic physics handling, from MovePosition to Velocity depending on situation
+- [x] WallRun mechanic (missing animation :c)
+- [ ] Detect, climb and descend slopes (ongoing)
 
 ### Unity - Visuals and VFX
 - [x] Propes for custom reflections
@@ -38,9 +40,8 @@ For learning porpouses and a challenge to make a complete 3D platformer from scr
 ##To-Do
 - [x] two Enemies and a Boss (Blender - Unity)
 - [ ] Ai, Pathfinding
-- [ ] Run on Walls
-- [ ] Gravity per Object system
-- [ ] Car Controller, Flying Controller
-- [ ] Shoot VFX projectiles
+- [x] Gravity per Object system
+- [ ] Car Controller, Flying Controller (ongoing)
+- [ ] Shoot VFX projectiles (can't wait to learn vfx and upgrade my lacking of photoshop skills)
 
  Any doubts on the ongoing project, just mail-me: maiksonmendes1988@gmail.com or maiksonstrife@gmail.com
