@@ -232,21 +232,23 @@ public class PlayerController : MonoBehaviour
         //Stick to wall and Run
         if (playerCore.collisionSenses.CheckWallRight())
         {  
+            rb.AddForce(transform.TransformDirection(Vector3.right * 2)); //Stick to Wall
+
             Quaternion playerRotation = Quaternion.LookRotation(playerCore.collisionSenses.GetWallRightNormal());
-            playerRotation *= Quaternion.LookRotation(Vector3.right) * Quaternion.Euler(0, 0, 30);
+            playerRotation *= Quaternion.LookRotation(Vector3.right) * Quaternion.Euler(0, 0, 30);  //Rotate
             transform.rotation = playerRotation;
 
-            rb.AddForce(transform.TransformDirection(Vector3.right));
-            playerCore.playerMovement.DirectionalVelocity(transform.TransformDirection(Vector3.forward), playerCore.playerData.jumpForce, false);
+            playerCore.playerMovement.DirectionalVelocity(transform.TransformDirection(Vector3.forward), playerCore.playerData.jumpForce, false); //Run
         }
         else if (playerCore.collisionSenses.CheckWallLeft())
         {
-            Quaternion playerRotation = Quaternion.LookRotation(playerCore.collisionSenses.GetWallLeftNormal());
-            playerRotation *= Quaternion.LookRotation(Vector3.left) * Quaternion.Euler(0, 0, -30);
+            rb.AddForce(transform.TransformDirection(Vector3.left * 2));  //Stick to Wall
+
+            Quaternion playerRotation = Quaternion.LookRotation(playerCore.collisionSenses.GetWallLeftNormal()); 
+            playerRotation *= Quaternion.LookRotation(Vector3.left) * Quaternion.Euler(0, 0, -30); //Rotate
             transform.rotation = playerRotation;
 
-            rb.AddForce(transform.TransformDirection(Vector3.left));
-            playerCore.playerMovement.DirectionalVelocity(transform.TransformDirection(Vector3.forward), playerCore.playerData.jumpForce, false);
+            playerCore.playerMovement.DirectionalVelocity(transform.TransformDirection(Vector3.forward), playerCore.playerData.jumpForce, false); //Run
         }
 
         //Jump in Opposit Direction
