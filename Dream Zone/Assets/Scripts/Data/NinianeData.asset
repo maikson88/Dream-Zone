@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: NinianeData
   m_EditorClassIdentifier: 
   maxFallVelocity: 30
-  jumpForce: 10
+  jumpForce: 20
   playerSpeed: 9
   rbVelocityMultiplier: 1
   maxSizeOfStairs: -1
-  wallRunForce: 300
+  gravityForce: 1.1
+  wallRunForce: 10
   maxwallRunTime: 129.1
   maxWallSpeed: 100
   normalWallJumpMultiplier: 1

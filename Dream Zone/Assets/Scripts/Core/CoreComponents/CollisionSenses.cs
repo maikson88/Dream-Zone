@@ -117,26 +117,17 @@ public class CollisionSenses : MonoBehaviour
         {
             if(CheckIsSlope()) return true;
         }
-        else if (Physics.Raycast(transform.position, transform.TransformDirection(-Vector3.forward), out hitFo, rayDistance))
-        {
-            if (CheckIsSlope()) return true;
-        }
+
         else if (Physics.Raycast(transform.position, transform.TransformDirection(1.5f, 0, 1), out hitFo, rayDistance))
         {
             if (CheckIsSlope()) return true;
         }
-        else if (Physics.Raycast(transform.position, transform.TransformDirection(-1.5f, 0, 1), out hitFo, rayDistance))
-        {
-            if (CheckIsSlope()) return true;        
-        }
-        else if (Physics.Raycast(transform.position, -transform.TransformDirection(1.5f, 0, 1), out hitFo, rayDistance))
+
+        else if (Physics.Raycast(transform.position,-transform.TransformDirection(-1.5f, 0, 1), out hitFo, rayDistance))
         {
             if (CheckIsSlope()) return true;
         }
-        else if (Physics.Raycast(transform.position, -transform.TransformDirection(-1.5f, 0, 1), out hitFo, rayDistance))
-        {
-            if (CheckIsSlope()) return true;
-        }
+
         else if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.up *0.3f + Vector3.down), out hitFo, rayDistance))
         {
             if (CheckIsSlope()) return true;
@@ -150,6 +141,7 @@ public class CollisionSenses : MonoBehaviour
             //Converting angle to dot
             float angleToRadians = minGroundAngle * Mathf.Deg2Rad;
             float dotGround = Mathf.Cos(angleToRadians);
+
             //Comparing if raycast is considered Ground
             if (cachedNormal.y < dotGround)
             {
@@ -191,6 +183,16 @@ public class CollisionSenses : MonoBehaviour
     public bool CheckWallLeft()
     {
         return Physics.Raycast(transform.position, transform.TransformDirection(Vector3.left), 1f, wallRunLayer);
+    }
+
+    public Vector3 GetWallLeftNormal()
+    {
+        RaycastHit hitFo;
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.left), out hitFo, 1f, wallRunLayer))
+        {
+            return hitFo.normal;
+        }
+        else return Vector3.zero;
     }
 
     private void OnDrawGizmos()
