@@ -10,8 +10,8 @@ LMB - Shoot
 E - Action (wallrun on checkboard walls)  
   
 [Joystick]  
-Left Anaglog - Movement  
-Right Anaglog - Camera  
+Left Analog - Movement  
+Right Analog - Camera  
 LTrigger - Aim mode  
 RTrigger - Shoot  
 East Button - Action (wallrun on checkboard walls)  
