@@ -36,7 +36,7 @@ public class PlayerMovement : MonoBehaviour
     private void GravityMultiplier()
     {
         //Default
-        SetGravity(playerCore.playerData.gravityForce);
+        //SetGravity(playerCore.playerData.gravityForce);
 
         if (playerCore.playerController.currentState == PlayerController.playerStates.idleJumping)
             playerCore.playerController.rb.mass = 15f;

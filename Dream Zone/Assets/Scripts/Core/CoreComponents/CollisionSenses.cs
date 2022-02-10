@@ -172,9 +172,9 @@ public class CollisionSenses : MonoBehaviour
         else return false;
     }
 
-    public bool CheckWallRight()
+    public bool CheckWallRight(float distanceToWall)
     {
-        return Physics.Raycast(transform.position, transform.TransformDirection(Vector3.right), 1f, wallRunLayer);
+        return Physics.Raycast(transform.position, transform.TransformDirection(Vector3.right), distanceToWall, wallRunLayer);
     }
 
     public Vector3 GetWallRightNormal()
@@ -187,9 +187,19 @@ public class CollisionSenses : MonoBehaviour
         else return Vector3.zero;
     }
 
-    public bool CheckWallLeft()
+    public Vector3 GetWallRightPosition()
     {
-        return Physics.Raycast(transform.position, transform.TransformDirection(Vector3.left), 1f, wallRunLayer);
+        RaycastHit hitFo;
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.right), out hitFo, 1f, wallRunLayer))
+        {
+            return hitFo.point;
+        }
+        else return Vector3.zero;
+    }
+
+    public bool CheckWallLeft(float distanceToWall)
+    {
+        return Physics.Raycast(transform.position, transform.TransformDirection(Vector3.left), distanceToWall, wallRunLayer);
     }
 
     public Vector3 GetWallLeftNormal()
