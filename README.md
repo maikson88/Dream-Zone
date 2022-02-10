@@ -44,7 +44,7 @@ East Button - Action (wallrun on checkboard walls)
 - [x] Climbing Stairs and any obstacle without applying external forces while moving with rigidbody.velocity
 - [x] Intercheable dynamic physics handling, from MovePosition to Velocity depending on situation
 - [x] WallRun mechanic (missing animation :c)
-- [ ] Detect, climb and descend slopes (ongoing)
+- [x] Detect, climb and descend slopes (ongoing)
 
 ### Unity - Visuals and VFX
 - [x] Propes for custom reflections
@@ -53,10 +53,12 @@ East Button - Action (wallrun on checkboard walls)
 - [x] Post-Processing (Bloom, Occlusion, Volume, etc.)
 
 ##To-Do
-- [x] two Enemies and a Boss (Blender - Unity)
+- [ ] two Enemies and a Boss (Blender - Unity)
 - [ ] Ai, Pathfinding
 - [x] Gravity per Object system
 - [ ] Car Controller, Flying Controller (ongoing)
+- [ ] Semi Automatic Camera (Free mode idle, Auto Aim on movement)
+- [ ] WallRun Camera (Look at next platform)
 - [ ] Shoot VFX projectiles (can't wait to learn vfx and upgrade my lacking of photoshop skills)
 
  Any doubts on the ongoing project, just mail-me: maiksonmendes1988@gmail.com or maiksonstrife@gmail.com
