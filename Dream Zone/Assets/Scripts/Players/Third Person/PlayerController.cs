@@ -16,13 +16,13 @@ public class PlayerController : MonoBehaviour
     public  Rigidbody rb { get; private set; }
     public Vector3 xDirection { get; private set; }
     public Vector3 yDirection { get; private set; }
+    public int jumpCharge { get; private set; }
 
     public bool canJump;
 
     private Tools JumpBuffer;
     private Animator anim;
     private string _previousState;
-    private int jumpCharge;
     private bool onGround;
 
     private void Start()
@@ -155,11 +155,11 @@ public class PlayerController : MonoBehaviour
         {
             jumpCharge = 0;
             playerCore.animEvents.SuperJump(false);
-            if (playerCore.animEvents.JumpUpFinished)
-            {
-                playerCore.playerMovement.JumpUpward(playerCore.playerData.jumpForce);
-                currentState = playerStates.onAir;
-            }
+            //if (playerCore.animEvents.JumpUpFinished)
+            //{
+            playerCore.playerMovement.JumpUpward(playerCore.playerData.jumpForce);
+            currentState = playerStates.onAir;
+            //}
         }
         else if (jumpCharge >= 70)
         {
@@ -172,7 +172,7 @@ public class PlayerController : MonoBehaviour
     private void onAir()
     {
 
-        if (rb.velocity.y <= 0)
+        if (rb.velocity.y <= 0 /*|| playerCore.collisionSenses.CheckTouchingGround()*/)
         {
             playerCore.animEvents.JumpReset();
             playerCore.animEvents.isSuperJump = false;
@@ -232,7 +232,7 @@ public class PlayerController : MonoBehaviour
         //Stick to wall and Run
         if (playerCore.collisionSenses.CheckWallRight())
         {  
-            rb.AddForce(transform.TransformDirection(Vector3.right * 2)); //Stick to Wall
+            rb.AddForce(transform.TransformDirection(Vector3.right * 10)); //Stick to Wall
 
             Quaternion playerRotation = Quaternion.LookRotation(playerCore.collisionSenses.GetWallRightNormal());
             playerRotation *= Quaternion.LookRotation(Vector3.right) * Quaternion.Euler(0, 0, 30);  //Rotate
@@ -278,6 +278,8 @@ public class PlayerController : MonoBehaviour
         if (!playerCore.collisionSenses.CheckWallRight() && !playerCore.collisionSenses.CheckWallLeft())
         {
             rb.useGravity = true;
+            anim.SetBool("isJumping", true);
+            anim.SetBool("isGroundMoving", false);
             currentState = playerStates.onAir;
         }
 

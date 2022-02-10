@@ -35,10 +35,21 @@ public class PlayerMovement : MonoBehaviour
 
     private void GravityMultiplier()
     {
+        //Default
+        SetGravity(playerCore.playerData.gravityForce);
+
+        if (playerCore.playerController.currentState == PlayerController.playerStates.idleJumping)
+            playerCore.playerController.rb.mass = 15f;
+        else
+            playerCore.playerController.rb.mass = 1f;
+    }
+
+    private void SetGravity(float gravityForce)
+    {
         if (playerCore.playerController.rb.velocity.y < 0)
             playerCore.playerController.rb.velocity = new Vector3(
-                playerCore.playerController.rb.velocity.x, 
-                playerCore.playerController.rb.velocity.y * playerCore.playerData.gravityForce,
+                playerCore.playerController.rb.velocity.x,
+                playerCore.playerController.rb.velocity.y * gravityForce,
                 playerCore.playerController.rb.velocity.z);
     }
 
@@ -79,17 +90,6 @@ public class PlayerMovement : MonoBehaviour
         bool noMovement;
     public void Movement(float playerSpeed)
     {
-        if (playerCore.playerController.playerInput.NormalizedMovementInput != Vector2.zero) noMovement = false;
-        if (noMovement) return;
-
-
-       
-       if(playerCore.playerController.rb.velocity != Vector3.zero && playerCore.playerController.playerInput.NormalizedMovementInput == Vector2.zero)
-        {
-            playerCore.playerController.rb.velocity = Vector3.zero;
-            noMovement = true;
-        }
-
         if (movementMode == rbMode.Teleport)
         {
             playerMovement = playerCore.playerController.xDirection + playerCore.playerController.yDirection;
@@ -125,11 +125,10 @@ public class PlayerMovement : MonoBehaviour
         if (playerMovement != Vector3.zero && !playerCore.playerController.playerInput.AimInput)
         {
             if (playerCore.animEvents.isSuperJump) return;
-
+            float yVel = playerCore.playerController.rb.velocity.y;
             Quaternion targetRotation = Quaternion.LookRotation(playerCore.playerMovement.playerMovement);
             Quaternion smoothRotation = Quaternion.Lerp(playerCore.playerController.transform.rotation, targetRotation, 9f * Time.deltaTime);
             playerCore.playerController.transform.rotation = Quaternion.Euler(0, smoothRotation.eulerAngles.y, 0);
-
         }
         if (playerCore.playerController.playerInput.AimInput)
         {
