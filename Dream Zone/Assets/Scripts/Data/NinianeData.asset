@@ -17,10 +17,11 @@ MonoBehaviour:
   playerSpeed: 10
   rbVelocityMultiplier: 1
   maxSizeOfStairs: -1
-  gravityForce: 1.1
+  gravityForce: 10
+  gravityForceSpeed: 5.5
   wallRunForce: 10
   maxwallRunTime: 129.1
   maxWallSpeed: 100
-  normalWallJumpMultiplier: 1
-  upWallJumpMultiplier: 1.5
-  fowardWallJumpMultiplier: 0.8
+  normalWallJumpMultiplier: 7
+  upWallJumpMultiplier: 0.6
+  fowardWallJumpMultiplier: 2

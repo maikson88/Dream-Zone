@@ -8,16 +8,15 @@ public class PlayerMovement : MonoBehaviour
     public enum rbMode { Velocity, Teleport, Gravity };
     public rbMode movementMode;
     public float rbMaxFallSpeed { get; private set; }
+    public Vector3 externalForce { get; private set; }
     public float ClimbHardness;
 
     private PlayerCore playerCore;
     public Vector3 playerMovement;
     private Tools rbModeTimer;
 
-    private Vector3 oldVelocity;
-
-    public Vector3 externalForce;
-
+    private float forceTime;
+    private Vector3 forceDirection;
 
     private void Start()
     {
@@ -29,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
     int stepsSinceLastGrounded;
     private void FixedUpdate()
     {
+        ApplyExternalForce();
         if (!playerCore.playerController.isJumping)
             SnapToGround();
         ChangeRbMode();
@@ -50,9 +50,10 @@ public class PlayerMovement : MonoBehaviour
     private void SetGravity(float gravityForce)
     {
         if (playerCore.playerController.rb.velocity.y < 0)
+
             playerCore.playerController.rb.velocity = new Vector3(
                 playerCore.playerController.rb.velocity.x,
-                playerCore.playerController.rb.velocity.y * gravityForce,
+                playerCore.playerController.rb.velocity.y * gravityForce * playerCore.playerData.gravityForceSpeed * Time.fixedDeltaTime,
                 playerCore.playerController.rb.velocity.z);
     }
 
@@ -200,6 +201,23 @@ public class PlayerMovement : MonoBehaviour
         //Gizmos.color = Color.green;
         //Gizmos.DrawLine(transform.position, transform.position + playerCore.playerController.rb.velocity.normalized);
         //Debug.Log(playerCore.playerController.rb.velocity.normalized);
+    }
+
+    public void SetExternalForce(Vector3 direction, float timer)
+    {
+        forceTime = timer;
+        forceDirection = direction;
+    }
+
+    private void ApplyExternalForce()
+    {
+        if (forceTime < 0) return;
+        forceTime -= Time.deltaTime;
+
+        if (forceTime > 0)
+            externalForce = forceDirection;
+        else
+            externalForce = Vector3.zero;
     }
 
     public void setFallVelocity(float fallVelocity) => rbMaxFallSpeed = fallVelocity;

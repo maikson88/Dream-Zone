@@ -97,7 +97,6 @@ public class PlayerController : MonoBehaviour
 
     private void GroundMoving()
     {
-
         anim.SetBool("isGroundMoving", true);
 
         //if(playerInput.NormalizedMovementInput != Vector2.zero)
@@ -156,11 +155,8 @@ public class PlayerController : MonoBehaviour
         {
             jumpCharge = 0;
             playerCore.animEvents.SuperJump(false);
-            //if (playerCore.animEvents.JumpUpFinished)
-            //{
             playerCore.playerMovement.JumpUpward(playerCore.playerData.jumpForce);
             currentState = playerStates.onAir;
-            //}
         }
         else if (jumpCharge >= 70)
         {
@@ -173,14 +169,13 @@ public class PlayerController : MonoBehaviour
     private void onAir()
     {
 
-        if (rb.velocity.y <= 0 /*|| playerCore.collisionSenses.CheckTouchingGround()*/)
+        if (rb.velocity.y <= 0)
         {
             playerCore.animEvents.JumpReset();
             playerCore.animEvents.isSuperJump = false;
             anim.SetBool("isFalling", true);
         }
 
-        if(playerInput.NormalizedMovementInput != Vector2.zero)
             playerCore.playerMovement.Movement(playerCore.playerData.playerSpeed);
 
 
@@ -230,7 +225,6 @@ public class PlayerController : MonoBehaviour
         playerCore.animEvents.SkipAnimationTo("Movement");
         anim.SetFloat("Running Speed", 1);
 
-
         //Stick to wall and Run
         if (playerCore.collisionSenses.CheckWallRight(1f))
         {
@@ -258,15 +252,30 @@ public class PlayerController : MonoBehaviour
         {
             rb.useGravity = true;
             Vector3 wallNormal;
-            if ((playerCore.collisionSenses.CheckWallRight(1f))) wallNormal = playerCore.collisionSenses.GetWallRightNormal();
-            else wallNormal = playerCore.collisionSenses.GetWallLeftNormal();
+            Quaternion playerRotation;
+            if ((playerCore.collisionSenses.CheckWallRight(1f)))
+            {
+                wallNormal = playerCore.collisionSenses.GetWallRightNormal();
+                playerRotation = Quaternion.LookRotation(wallNormal);
+                playerRotation *= Quaternion.LookRotation(Vector3.right);  //Rotate
+            }
+
+            else
+            {
+                wallNormal = playerCore.collisionSenses.GetWallLeftNormal();
+                playerRotation = Quaternion.LookRotation(wallNormal);
+                playerRotation *= Quaternion.LookRotation(Vector3.left);  //Rotate
+            }
 
             Vector3 JumpDirection = (
                 wallNormal * playerCore.playerData.normalWallJumpMultiplier
                 + transform.TransformDirection(Vector3.up) * playerCore.playerData.upWallJumpMultiplier
                 + transform.TransformDirection(Vector3.forward) * playerCore.playerData.fowardWallJumpMultiplier);
 
-            playerCore.playerMovement.DirectionalVelocity(JumpDirection, playerCore.playerData.jumpForce, true);
+            playerCore.playerMovement.SetExternalForce(JumpDirection, 1f);
+            //playerCore.playerMovement.DirectionalVelocity(JumpDirection, playerCore.playerData.jumpForce, true);
+
+            transform.rotation = playerRotation;
 
 
             anim.SetBool("isJumping", true);

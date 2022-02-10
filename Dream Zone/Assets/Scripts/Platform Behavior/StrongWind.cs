@@ -11,11 +11,12 @@ public class StrongWind : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        other.GetComponent<PlayerController>().playerCore.playerMovement.externalForce = windDirection * windForce;
+
+        other.GetComponent<PlayerController>().playerCore.playerMovement.SetExternalForce(windDirection * windForce, 2);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        other.GetComponent<PlayerController>().playerCore.playerMovement.externalForce = Vector3.zero;
+        other.GetComponent<PlayerController>().playerCore.playerMovement.SetExternalForce(windDirection * windForce, 0);
     }
 }
