@@ -8,8 +8,7 @@ public class PlayerController : MonoBehaviour
     public enum playerStates { groundMoving, idleJumping, runJumping, superJumping, onAir, wallRunning, waiting };
     public playerStates currentState;
 
-    [SerializeField]
-    private PlayerCore playerCore;
+    public PlayerCore playerCore;
 
     public InputHandler playerInput { get; private set; }
     public bool isJumping { get; private set; }
@@ -101,6 +100,7 @@ public class PlayerController : MonoBehaviour
 
         anim.SetBool("isGroundMoving", true);
 
+        //if(playerInput.NormalizedMovementInput != Vector2.zero)
         playerCore.playerMovement.Movement(playerCore.playerData.playerSpeed);  
 
         if (canJump && playerInput.JumpInput) isJumping = true;

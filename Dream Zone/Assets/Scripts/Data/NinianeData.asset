@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxFallVelocity: 30
   jumpForce: 20
-  playerSpeed: 9
+  playerSpeed: 10
   rbVelocityMultiplier: 1
   maxSizeOfStairs: -1
   gravityForce: 1.1

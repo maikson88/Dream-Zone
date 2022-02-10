@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class CollisionSenses : MonoBehaviour
 {
+    [SerializeField] private PlayerCore playerCore;
+
     [Header("Small Step Climb")]
     [SerializeField]
     private Transform smallStepUpper;
@@ -37,6 +39,7 @@ public class CollisionSenses : MonoBehaviour
     public bool CheckStep()
     {
         if (CheckTheresSlopeNear()) return false;
+        if (playerCore.playerController.currentState != PlayerController.playerStates.groundMoving) return false;
 
         RaycastHit hitLower;
         if (Physics.Raycast(smallStepLower.transform.position, transform.TransformDirection(Vector3.forward), out hitLower, rayDistance))

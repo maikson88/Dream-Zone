@@ -16,11 +16,14 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 oldVelocity;
 
+    public Vector3 externalForce;
+
 
     private void Start()
     {
         playerCore = GetComponent<PlayerCore>();
         rbModeTimer = new Tools();
+        externalForce = Vector3.zero;
     }
 
     int stepsSinceLastGrounded;
@@ -36,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
     private void GravityMultiplier()
     {
         //Default
-        //SetGravity(playerCore.playerData.gravityForce);
+        SetGravity(playerCore.playerData.gravityForce);
 
         if (playerCore.playerController.currentState == PlayerController.playerStates.idleJumping)
             playerCore.playerController.rb.mass = 15f;
@@ -109,7 +112,7 @@ public class PlayerMovement : MonoBehaviour
             if (playerCore.playerController.rb.velocity.y > 0)
                 newMovement = new Vector3(projectedMovement.x * (groundNormal.y - ClimbHardness), playerCore.playerController.rb.velocity.y, projectedMovement.z * (groundNormal.y - ClimbHardness));
 
-            playerCore.playerController.rb.velocity = new Vector3(newMovement.x, playerCore.playerController.rb.velocity.y, newMovement.z);
+            playerCore.playerController.rb.velocity = new Vector3(newMovement.x, playerCore.playerController.rb.velocity.y, newMovement.z) + externalForce;
         }
     }
 
@@ -173,7 +176,7 @@ public class PlayerMovement : MonoBehaviour
         {
             playerCore.playerController.rb.velocity = Vector3.zero;
             movementMode = rbMode.Teleport;
-            if (playerCore.collisionSenses.CheckTouchingGround())
+            if (playerCore.collisionSenses.CheckTouchingGround() && playerCore.playerController.currentState == PlayerController.playerStates.groundMoving)
             {
                 playerCore.playerController.rb.position -= new Vector3(0f, playerCore.playerData.maxSizeOfStairs * Time.deltaTime, 0f);
             }
