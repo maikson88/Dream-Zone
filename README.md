@@ -2,19 +2,19 @@
 For learning porpouses and a challenge to make a complete 3D platformer from scratch
 
 ### Controls
-[Keyboard]
-WASD - Movement
-Mouse - Camera
-Q - Aim mode
-LMB - Shoot
-E - Action (wallrun on checkboard walls)
-
-[Joystick]
-Left Anaglog - Movement
-Right Anaglog - Camera
-LTrigger - Aim mode
-RTrigger - Shoot
-East Button - Action (wallrun on checkboard walls)
+[Keyboard]  
+WASD - Movement  
+Mouse - Camera  
+Q - Aim mode  
+LMB - Shoot  
+E - Action (wallrun on checkboard walls)  
+  
+[Joystick]  
+Left Anaglog - Movement  
+Right Anaglog - Camera  
+LTrigger - Aim mode  
+RTrigger - Shoot  
+East Button - Action (wallrun on checkboard walls)  
 
 ##What has been made
 
