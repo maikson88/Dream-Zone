@@ -16,7 +16,7 @@ LTrigger - Aim mode
 RTrigger - Shoot  
 East Button - Action (wallrun on checkboard walls)  
 
-##What has been made
+## What has been made
 
 ### Blender - Unity
 - [x] 3D Modeling Character
