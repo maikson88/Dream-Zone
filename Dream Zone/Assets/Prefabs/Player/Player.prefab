@@ -190,6 +190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0563ead1c8a0da54892356a3396f51db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerCore: {fileID: 8227827924099000533}
   smallStepUpper: {fileID: 8227827923302652782}
   smallStepLower: {fileID: 8227827922886576325}
   rayDistance: 1

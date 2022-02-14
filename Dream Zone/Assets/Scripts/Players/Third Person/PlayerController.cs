@@ -136,8 +136,9 @@ public class PlayerController : MonoBehaviour
     {
         if (playerInput.isJumpPressed > 0)
         {
-            playerCore.playerVfx.SetvfxShockParticle(true);
             jumpCharge++;
+            if(jumpCharge > 10f)
+            playerCore.playerVfx.SetvfxShockParticle(true);
         }
         else
         {
@@ -148,7 +149,6 @@ public class PlayerController : MonoBehaviour
     private void Jump()
     {
         playerCore.playerVfx.SetvfxShockParticle(false);
-        anim.SetBool("isReadyToJump", false);
         
 
         if (jumpCharge < 70)

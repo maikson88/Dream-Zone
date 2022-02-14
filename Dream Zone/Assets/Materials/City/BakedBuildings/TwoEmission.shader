@@ -78,7 +78,7 @@ Shader "Custom/TwoEmission"
             #endif
             // Albedo comes from a texture tinted by color
             fixed4 color = tex2D (_MainTex, IN.uv_MainTex) * _Color;
-            fixed4 d = tex2D (_EmissionTex, IN.uv_EmissionTex) * _Emission;
+            fixed4 color2 = tex2D (_EmissionTex, IN.uv_EmissionTex) * _Emission;
             color.rgb = Hue(color.rgb, _Hue);
             o.Albedo = color.rgb;
             // Metallic and smoothness come from slider variables
@@ -86,7 +86,7 @@ Shader "Custom/TwoEmission"
             o.Smoothness = _Glossiness;
             o.Alpha = color.a;
             o.Emission = color;
-            o.Emission += d;
+            o.Emission += color2;
         }
         ENDCG
     }
