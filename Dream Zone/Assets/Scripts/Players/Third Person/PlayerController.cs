@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     public bool canJump;
 
     private Tools JumpBuffer;
-    private Animator anim;
+    public Animator anim;
     private string _previousState;
     private bool onGround;
 

@@ -2,23 +2,18 @@ using UnityEngine;
 using Cinemachine;
 using System;
 
-//[RequireComponent(typeof(InputHandler))]
 public class SwitchVCam : MonoBehaviour
 {
-    private CinemachineVirtualCamera virtualCamera;
-    [SerializeField]
-    private InputHandler inputHandler;
-    [SerializeField]
-    private int cameraPriority;
-    private Canvas aimCanvas;
+    [SerializeField] private CinemachineVirtualCamera aimCinemachine;
+    [SerializeField] private InputHandler inputHandler;
+    [SerializeField] private int cameraPriority;
+    [SerializeField] private Canvas aimCanvas;
     private int defaultPriority;
+
 
     private void Awake()
     {
-        virtualCamera = GetComponent<CinemachineVirtualCamera>();
-        inputHandler = FindObjectOfType<InputHandler>();
-        aimCanvas = GetComponentInChildren<Canvas>();
-        defaultPriority = virtualCamera.Priority;
+        defaultPriority = aimCinemachine.Priority;
         aimCanvas.enabled = false;
     }
 
@@ -36,8 +31,7 @@ public class SwitchVCam : MonoBehaviour
         }
     }
 
-    private void StartAim() => virtualCamera.Priority = 11;
+    private void StartAim() => aimCinemachine.Priority = 11;
 
-
-    private void CancelAim() => virtualCamera.Priority = defaultPriority;
+    private void CancelAim() => aimCinemachine.Priority = defaultPriority;
 }

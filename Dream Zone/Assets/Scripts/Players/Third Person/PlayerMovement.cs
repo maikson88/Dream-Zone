@@ -5,8 +5,12 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public enum rbMode { Velocity, Teleport, Gravity };
-    public rbMode movementMode;
+    public enum RbMode { Velocity, Teleport, Gravity };
+    public RbMode movementMode;
+
+    public enum PlayerDirection { Foward, UpLeft, Left, UpRight, Right, Downwards };
+    public PlayerDirection playerDirection;
+
     public float rbMaxFallSpeed { get; private set; }
     public Vector3 externalForce { get; private set; }
     public float ClimbHardness;
@@ -28,6 +32,8 @@ public class PlayerMovement : MonoBehaviour
     int stepsSinceLastGrounded;
     private void FixedUpdate()
     {
+        GetPlayerDirection();
+
         ApplyExternalForce();
         if (!playerCore.playerController.isJumping)
             SnapToGround();
@@ -94,7 +100,7 @@ public class PlayerMovement : MonoBehaviour
         bool noMovement;
     public void Movement(float playerSpeed)
     {
-        if (movementMode == rbMode.Teleport)
+        if (movementMode == RbMode.Teleport)
         {
             playerMovement = playerCore.playerController.xDirection + playerCore.playerController.yDirection;
             playerMovement.Normalize();
@@ -103,7 +109,7 @@ public class PlayerMovement : MonoBehaviour
             playerCore.playerController.rb.MovePosition(playerCore.playerController.rb.position + playerMovement * Time.fixedDeltaTime);
         }
 
-        if (movementMode == rbMode.Velocity)
+        if (movementMode == RbMode.Velocity)
         {
             playerMovement = playerCore.playerController.xDirection + playerCore.playerController.yDirection;
             Vector3 groundNormal = playerCore.collisionSenses.GetGroundNormal();
@@ -167,7 +173,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (SnapToGround())
             {
-                movementMode = rbMode.Velocity;
+                movementMode = RbMode.Velocity;
                 return;
             }
         }
@@ -176,7 +182,7 @@ public class PlayerMovement : MonoBehaviour
         if (playerCore.collisionSenses.CheckStep() && playerCore.playerController.playerInput.NormalizedMovementInput != Vector2.zero)
         {
             playerCore.playerController.rb.velocity = Vector3.zero;
-            movementMode = rbMode.Teleport;
+            movementMode = RbMode.Teleport;
             if (playerCore.collisionSenses.CheckTouchingGround() && playerCore.playerController.currentState == PlayerController.playerStates.groundMoving)
             {
                 playerCore.playerController.rb.position -= new Vector3(0f, playerCore.playerData.maxSizeOfStairs * Time.deltaTime, 0f);
@@ -187,20 +193,9 @@ public class PlayerMovement : MonoBehaviour
         {
             if (rbModeTimer.TimeHasPassed(0.7f))
             {
-            movementMode = rbMode.Velocity;
+            movementMode = RbMode.Velocity;
             }
         }
-    }
-
-    private void OnDrawGizmos()
-    {
-        //Showing the projection on Plane (For documentation pourposes)
-
-        //Gizmos.color = Color.cyan;
-        //Gizmos.DrawLine(transform.position, transform.position + oldVelocity.normalized);
-        //Gizmos.color = Color.green;
-        //Gizmos.DrawLine(transform.position, transform.position + playerCore.playerController.rb.velocity.normalized);
-        //Debug.Log(playerCore.playerController.rb.velocity.normalized);
     }
 
     public void SetExternalForce(Vector3 direction, float timer)
@@ -218,6 +213,43 @@ public class PlayerMovement : MonoBehaviour
             externalForce = forceDirection;
         else
             externalForce = Vector3.zero;
+    }
+
+    private bool facingRight;
+    private bool facingLeft;
+    private float playerCameraDot;
+    private void GetPlayerDirection()
+    {
+        playerCameraDot = Vector3.Dot(playerCore.cameraTransform.forward.normalized, transform.TransformDirection(Vector3.forward));
+
+        if (Vector3.Dot(playerCore.cameraTransform.right.normalized, transform.TransformDirection(Vector3.forward)) > 0.3)
+        {
+            facingRight = true;
+            facingLeft = false;
+        }
+        else if (Vector3.Dot(playerCore.cameraTransform.right.normalized, transform.TransformDirection(Vector3.forward)) < -0.3)
+        {
+            facingLeft = true;
+            facingRight = false;
+        }
+
+        if (playerCameraDot >= 0.95)
+            playerDirection = PlayerDirection.Foward;
+
+        else if (playerCameraDot >= 0.26 && playerCameraDot < 0.95 && facingLeft)
+            playerDirection = PlayerDirection.UpLeft;
+
+        else if (playerCameraDot < 0.26 && playerCameraDot > -0.24 && facingLeft)
+            playerDirection = PlayerDirection.Left;
+
+        else if (playerCameraDot >= 0.26 && playerCameraDot < 0.95 && facingRight)
+            playerDirection = PlayerDirection.UpRight;
+
+        else if (playerCameraDot < 0.26 && playerCameraDot > -0.24 && facingRight)
+            playerDirection = PlayerDirection.Right;
+
+        else
+            playerDirection = PlayerDirection.Downwards;
     }
 
     public void setFallVelocity(float fallVelocity) => rbMaxFallSpeed = fallVelocity;

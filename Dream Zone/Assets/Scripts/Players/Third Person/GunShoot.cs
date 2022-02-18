@@ -41,6 +41,8 @@ public class GunShoot : MonoBehaviour
 
     private void Trigger()
     {
+        playerCore.playerController.anim.SetTrigger("Shooting");
+        playerCore.animEvents.isShooting = true;
         GetFromPool();
         //Make it an interface so it triggers any behavior if it does have any
         shootFireBehavior = _instance.GetComponent<ShootFireBehavior>();

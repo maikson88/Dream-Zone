@@ -821,7 +821,6 @@ GameObject:
   - component: {fileID: 8171105026498551067}
   - component: {fileID: 8171105026498551066}
   - component: {fileID: 8171105026498551068}
-  - component: {fileID: 5051792923381738816}
   - component: {fileID: 5051792923381738820}
   m_Layer: 0
   m_Name: AimCinemachine
@@ -915,20 +914,6 @@ MonoBehaviour:
   m_Damping: 0
   m_DampingWhenOccluded: 0
   m_OptimalTargetDistance: 0
---- !u!114 &5051792923381738816
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8171105026498551065}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0bdbce4060ccecb4f9d4beb9a395adb4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputHandler: {fileID: 0}
-  cameraPriority: 0
 --- !u!114 &5051792923381738820
 MonoBehaviour:
   m_ObjectHideFlags: 0

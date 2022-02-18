@@ -48,6 +48,12 @@ public class InputHandler : MonoBehaviour
     {
         RawMovementInput = context.ReadValue<Vector2>();
         NormalizedMovementInput = RawMovementInput.normalized;
+
+        //Debug.Log(Vector3.Angle(NormalizedMovementInput, Vector2.up));
+
+
+        //if (RawMovementInput >= new Vector2(-0.7f, 0.7f))
+        //    Debug.Log("runningFoward");
     }
 
     public void OnAimInput(InputAction.CallbackContext context)
@@ -93,6 +99,15 @@ public class InputHandler : MonoBehaviour
 
         if (context.canceled)
             ActionInput = false;
+    }
+
+    string pathToYourFile = @"C:\UnityScreenshots\";
+    public void OnScreenshotInput(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            ScreenCapture.CaptureScreenshot(pathToYourFile + "Screenshot__" + System.DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss") + ".png", 2);
+        }
     }
 
     public void InputBuffers()

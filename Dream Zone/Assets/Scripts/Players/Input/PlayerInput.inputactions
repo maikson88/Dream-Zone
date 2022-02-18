@@ -58,6 +58,15 @@
                     "processors": "ScaleVector2(x=5,y=5)",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Screenshot",
+                    "type": "Button",
+                    "id": "92ad5fd1-4b20-4cae-bfb1-97514e775b1e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -234,6 +243,17 @@
                     "processors": "",
                     "groups": "Keyboard",
                     "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5ee34763-3e2e-4eda-b8b1-c7225ad00927",
+                    "path": "<Keyboard>/b",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Screenshot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

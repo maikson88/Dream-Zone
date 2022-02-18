@@ -14,8 +14,14 @@ public class NinianeAnimEvents : MonoBehaviour
     public string currentAnimation;
 
     public bool isSuperJump;
+    public bool isShooting;
     private string previousAnim;
     private string currentAnim;
+
+    private void Update()
+    {
+        
+    }
 
     public void SuperJump(bool isSuperJump)
     {
@@ -39,9 +45,6 @@ public class NinianeAnimEvents : MonoBehaviour
         playerController.IsJumpingReset();
     }
 
-    //Actually being used by JumpUpAnimation
-    private void JumpUpTrigger() => JumpUpFinished = true;
-
     public void SkipAnimationTo(string targetAnim)
     {
         anim.GetComponent<Animator>().enabled = false;
@@ -61,6 +64,7 @@ public class NinianeAnimEvents : MonoBehaviour
     {
         return currentAnimation;
     }
+
     public void DebugAnimEvents()
     {
         currentAnim = GetCurrentAnim();
@@ -74,7 +78,9 @@ public class NinianeAnimEvents : MonoBehaviour
         anim.SetBool("isSuperJump", false);
         anim.SetBool("isJumping", false);
         anim.SetBool("isFalling", false);
-        anim.SetBool("isReadyToJump", false);
         anim.SetBool("isGroundMoving", false);
     }
+
+    //Animator event
+    private void JumpUpTrigger() => JumpUpFinished = true;
 }
