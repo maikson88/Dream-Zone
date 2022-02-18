@@ -42,9 +42,13 @@ public class GunShoot : MonoBehaviour
     private void Trigger()
     {
         playerCore.playerController.anim.SetTrigger("Shooting");
-        playerCore.animEvents.isShooting = true;
+        
+        Invoke("Shooting", 0.1f);
+    }
+
+    private void Shooting()
+    {
         GetFromPool();
-        //Make it an interface so it triggers any behavior if it does have any
         shootFireBehavior = _instance.GetComponent<ShootFireBehavior>();
 
         if (Physics.Raycast(playerCore.cameraTransform.position, playerCore.cameraTransform.forward, out hit, Mathf.Infinity))

@@ -14,7 +14,6 @@ public class NinianeAnimEvents : MonoBehaviour
     public string currentAnimation;
 
     public bool isSuperJump;
-    public bool isShooting;
     private string previousAnim;
     private string currentAnim;
 

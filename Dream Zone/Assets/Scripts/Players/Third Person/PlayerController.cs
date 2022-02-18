@@ -99,7 +99,6 @@ public class PlayerController : MonoBehaviour
     {
         anim.SetBool("isGroundMoving", true);
 
-        //if(playerInput.NormalizedMovementInput != Vector2.zero)
         playerCore.playerMovement.Movement(playerCore.playerData.playerSpeed);  
 
         if (canJump && playerInput.JumpInput) isJumping = true;
