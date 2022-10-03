@@ -1363,17 +1363,17 @@ MonoBehaviour:
     overrideState: 0
     value: 1
   color:
-    overrideState: 1
+    overrideState: 0
     value: {r: 0, g: 0.11774111, b: 1, a: 1}
   fastMode:
     overrideState: 1
     value: 1
   dirtTexture:
-    overrideState: 1
+    overrideState: 0
     value: {fileID: 2800000, guid: 33a26f95ccc9ad644be6250e2ebe1bd6, type: 3}
     defaultState: 1
   dirtIntensity:
-    overrideState: 1
+    overrideState: 0
     value: 12.06
 --- !u!114 &5816605442985623022
 MonoBehaviour:

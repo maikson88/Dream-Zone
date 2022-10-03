@@ -205,8 +205,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5051792922637726115}
-  m_LocalRotation: {x: 0.08939615, y: -0.74763024, z: 0.10309265, w: 0.64994556}
-  m_LocalPosition: {x: 16.609753, y: 5.756208, z: 22.569767}
+  m_LocalRotation: {x: 0.088874556, y: -0.7481326, z: 0.1023624, w: 0.64955443}
+  m_LocalPosition: {x: 12.614536, y: 5.623214, z: 1.7882881}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -280,7 +280,7 @@ MonoBehaviour:
   volumeTrigger: {fileID: 5051792922637726116}
   volumeLayer:
     serializedVersion: 2
-    m_Bits: 2147483647
+    m_Bits: 31743
   stopNaNPropagation: 1
   finalBlitToCameraTarget: 0
   antialiasingMode: 2
@@ -474,6 +474,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5051792923520780592}
+  - component: {fileID: 1199071101}
   m_Layer: 0
   m_Name: Cameras
   m_TagString: Untagged
@@ -499,6 +500,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1199071101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5051792923520780593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bdbce4060ccecb4f9d4beb9a395adb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aimCinemachine: {fileID: 8171105026498551066}
+  inputHandler: {fileID: 0}
+  cameraPriority: 0
+  aimCanvas: {fileID: 5051792921975372602}
 --- !u!1 &6033779229484594265
 GameObject:
   m_ObjectHideFlags: 0
@@ -526,8 +543,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6033779229484594265}
-  m_LocalRotation: {x: 0.13917312, y: -0, z: -0, w: 0.9902681}
-  m_LocalPosition: {x: 16.609753, y: 5.756208, z: 22.569767}
+  m_LocalRotation: {x: 0.059306376, y: -0, z: -0, w: 0.9982398}
+  m_LocalPosition: {x: 12.614536, y: 5.623214, z: 1.7882881}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -564,7 +581,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.6361386, y: 1}
+    m_SensorSize: {x: 1.610989, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 1
@@ -652,7 +669,6 @@ GameObject:
   - component: {fileID: 6033779229815426547}
   - component: {fileID: 6033779229815426550}
   - component: {fileID: 6033779229815426549}
-  - component: {fileID: 6033779229815426551}
   - component: {fileID: 6033779229815426548}
   m_Layer: 0
   m_Name: cm
@@ -731,23 +747,6 @@ MonoBehaviour:
   m_MaximumFOV: 60
   m_MinimumOrthoSize: 1
   m_MaximumOrthoSize: 5000
---- !u!114 &6033779229815426551
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6033779229815426546}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_NoiseProfile: {fileID: 11400000, guid: 46965f9cbaf525742a6da4c2172a99cd, type: 2}
-  m_PivotOffset: {x: 0, y: 0, z: 0}
-  m_AmplitudeGain: 0.3
-  m_FrequencyGain: 0.3
-  mNoiseOffsets: {x: -765.3436, y: 412.4553, z: 513.0689}
 --- !u!114 &6033779229815426548
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -836,8 +835,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8171105026498551065}
-  m_LocalRotation: {x: -0.0044505745, y: -0, z: -0, w: 0.9999901}
-  m_LocalPosition: {x: 5.4783125, y: 1.8448379, z: 14.665319}
+  m_LocalRotation: {x: 0.059306376, y: -0, z: -0, w: 0.9982398}
+  m_LocalPosition: {x: 1.9184331, y: 5.0874777, z: -15.846028}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -875,7 +874,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.6361386, y: 1}
+    m_SensorSize: {x: 1.610989, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 1
@@ -996,9 +995,9 @@ MonoBehaviour:
   m_YDamping: 0.2
   m_ZDamping: 1
   m_TargetMovementOnly: 1
-  m_ScreenX: 0.08
-  m_ScreenY: 0.3129505
-  m_CameraDistance: 6.12
+  m_ScreenX: 0.29
+  m_ScreenY: 0.68
+  m_CameraDistance: 16.08
   m_DeadZoneWidth: 0
   m_DeadZoneHeight: 0
   m_DeadZoneDepth: 0
@@ -1050,7 +1049,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_RecenterTarget: 2
   m_VerticalAxis:
-    Value: -0.51
+    Value: 6.8
     m_SpeedMode: 1
     m_MaxSpeed: 0.03
     m_AccelTime: 0.2
